@@ -63,19 +63,37 @@ Toda lectura de campo opcional pasa por los ayudantes de `src/utilidades.ts`
 (`textoOpcional`, `formatearMoneda`, `formatearEntero`, `formatearFecha`).
 Nunca formatees en línea dentro del JSX.
 
-## 3. Diseño
+## 3. Diseño — sistema «Industrial Inventory Ledger»
 
-Sistema propio, sobrio, orientado a lectura densa de inventario. Tokens en
-`src/index.css` como variables CSS; en los componentes se usan clases de Tailwind
-que consumen esos tokens.
+Generado con Google Stitch; el prompt y el resultado están en
+`docs/PROMPT-STITCH.md`. Tokens en `src/index.css` como variables CSS; en los
+componentes se usan clases de Tailwind que consumen esos tokens. **Nunca
+escribas un color literal en un componente.**
 
-- **Superficie:** fondo `--fondo`, tarjetas `--superficie` con borde `--borde` de 1 px. Sin sombras pesadas.
-- **Acento:** un solo color de marca (`--acento`). Nada de degradados multicolor.
-- **Semáforo de inventario:** verde = stock sano, ámbar = por debajo del mínimo, rojo = agotado, gris = sin dato. Nunca uses solo el color: acompaña siempre con texto.
-- **Tipografía:** escala corta. Título de tarjeta 15px/600, metadatos 12px/500 atenuados, cifras tabulares (`font-variant-numeric: tabular-nums`) en todo lo que sea número.
-- **Radios:** 10px en tarjetas y controles, 999px en chips.
+**Personalidad.** Precisión industrial, no software corporativo. La referencia es
+un instrumento de medición bien hecho: denso, calmado, legible, sin decoración.
+Papel cálido en lugar de blanco clínico. La estructura la definen líneas de 1 px,
+no sombras. La jerarquía la marcan el peso tipográfico y el espacio, no el color.
+Prohibidos: degradados, glassmorphism, ilustraciones, emojis.
+
+- **Superficie:** fondo `--fondo`, tarjetas `--superficie` con borde `--borde` de 1 px. Sombra solo bajo la barra de filtros cuando queda fija.
+- **Acento:** un único `--acento` (verde de bodega), usado con avaricia: chips activos, botón primario y barras de la gráfica. Nada más.
+- **Semáforo de inventario:** `--ok` = stock sano, `--alerta` = bajo el mínimo, `--critico` (terracota apagado) = agotado, `--neutro` = sin dato. El color **nunca** comunica solo: siempre punto de color más texto.
+- **Tipografía:** IBM Plex Sans para la interfaz, IBM Plex Mono para SKUs y cifras monetarias. Escala: 22/600 cifra de indicador, 19/600 título de página, 15/600 título de tarjeta, 13/400 base, 12/500 metadatos, 11/500 mayúsculas con `tracking` 0.04em en etiquetas de indicador. Cifras tabulares (clase `cifras`) en todo lo que sea número.
+- **Forma:** rejilla base de 4 px. Radio 10px en tarjetas, campos y botones; 999px solo en chips. Bordes de 1 px.
 - **Densidad:** rejilla de tarjetas con `minmax(260px, 1fr)`. Sin alturas fijas.
-- **Modo oscuro:** los tokens se redefinen bajo `prefers-color-scheme: dark`. Ningún color se declara solo dentro del bloque oscuro.
+- **Modo oscuro:** carbón cálido, nunca azulado ni negro puro. Los tokens se redefinen bajo `prefers-color-scheme: dark`. Ningún color se declara solo dentro del bloque oscuro.
+
+### Reglas de experiencia de usuario, no negociables
+
+- **Paginación explícita.** Nada de scroll infinito ni de botón «cargar más».
+- **Un solo eje de scroll** en toda la pantalla. Ninguna zona con scroll propio ni rejilla con altura fija y desbordamiento interno.
+- **Contraste AA** como mínimo en todo el texto, incluidos los grises atenuados.
+- **Áreas de toque** de 36 px de alto como mínimo en cualquier control.
+- **Foco visible:** contorno de 2 px en `--acento` con 2 px de separación.
+- Sin modales para el flujo principal; el detalle va en panel lateral.
+- Sin texto centrado en bloques largos, sin mayúsculas sostenidas fuera de las etiquetas de indicador.
+- **Sin imágenes de producto.** El archivo de datos no las tiene y no se inventan marcadores de posición.
 
 ## 4. Componentes
 

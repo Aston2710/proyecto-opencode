@@ -229,6 +229,66 @@ tamaño: son lo que el usuario viene a leer.
 
 ---
 
+## Resultado de la sesión
+
+Stitch devolvió dos tableros: un sistema de diseño bautizado **«Industrial
+Inventory Ledger»** y una pantalla de aplicación.
+
+### Lo que se adoptó
+
+| Decisión | Estado |
+| --- | --- |
+| Paleta con rampas tonales sobre `#1F5F4B` | Adoptada |
+| IBM Plex Sans para interfaz, IBM Plex Mono para SKUs y cifras | Adoptada |
+| Papel cálido `#F7F6F3` y bordes `#E3E1DC` | Adoptada |
+| **Terracota `#7F443E` para el estado crítico** | Adoptada, sustituye al rojo `#A53024` |
+| Neutro `#757875` | Adoptada |
+
+La aportación propia de Stitch fue el terracota. El rojo original competía con el
+papel cálido del fondo; el terracota convive con él sin perder la lectura de
+alarma. Se ajustó su variante oscura a `#C98D84` para conservar el contraste AA
+sobre carbón.
+
+### Lo que se descartó
+
+La pantalla de aplicación se generó en formato **móvil** pese a haberse pedido
+web, y con ella llegaron tres decisiones fuera de alcance:
+
+| Elemento generado | Motivo del descarte |
+| --- | --- |
+| Barra de navegación inferior con las pestañas Pedidos, Inventario y Reportes | Secciones inexistentes: el proyecto es una sola vista |
+| Miniatura de imagen en cada fila de producto | El archivo de datos no contiene imágenes y no se inventan marcadores |
+| Lista de filas en lugar de rejilla de tarjetas | Consecuencia del formato móvil, no de una decisión de diseño |
+
+Se solicitó una segunda pasada en formato escritorio con el prompt de
+refinamiento 6.
+
+### 6 · Corrección a formato escritorio
+
+```
+Rehaz esta pantalla en formato web de escritorio, 1440px de ancho. No es una
+aplicación móvil.
+
+Elimina la barra de navegación inferior con pestañas: la aplicación es una sola
+vista, no tiene secciones de Pedidos, Inventario ni Reportes.
+
+Elimina las miniaturas de imagen de los productos. El catálogo no tiene
+fotografías y no deben aparecer marcadores de posición.
+
+Sustituye la lista de filas por una rejilla de tarjetas de cuatro columnas con
+separación de 14px, contenido centrado con un ancho máximo de 1240px.
+
+Los cuatro indicadores van en una sola fila horizontal, no en rejilla de dos por
+dos. La barra de filtros ocupa el ancho completo con la búsqueda, los dos
+desplegables y los chips de categoría visibles a la vez, sin desplazamiento
+horizontal.
+
+Conserva exactamente la paleta, la tipografía y el sistema de espaciado ya
+definidos.
+```
+
+---
+
 ## Después de Stitch
 
 1. Exporta las pantallas y guárdalas en `docs/diseño/` como evidencia para el

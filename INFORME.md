@@ -14,7 +14,9 @@
 
 > ### Pendientes antes de entregar
 >
-> - [ ] **Ejecutar la sesión de diseño en Google Stitch** y aplicar el resultado a la interfaz. La sección 3 declara Stitch como herramienta de diseño; esa declaración solo es cierta una vez hecho. Adjuntar la captura de la sesión.
+> - [x] Ejecutar la sesión de diseño en Google Stitch y aplicar el resultado.
+> - [ ] Guardar las capturas de la sesión de Stitch en `docs/diseño/`.
+> - [ ] Aplicar el prompt de refinamiento 6, que corrige el formato móvil a escritorio.
 > - [ ] Completar el nombre del autor en la ficha superior.
 > - [ ] Pegar el enlace del repositorio y el de la aplicación desplegada.
 > - [ ] Borrar este bloque de pendientes.
@@ -69,10 +71,24 @@ Las directrices del curso contemplan **Open Design** para la fase de diseño y
 admiten alternativas siempre que se declaren en el informe. En este proyecto se
 utilizó **Google Stitch** en lugar de Open Design.
 
-El diseño final se materializó en código mediante el agente, respetando el
-sistema de tokens definido en la skill del proyecto: superficie neutra, un único
-color de acento, semáforo de inventario en verde, ámbar, rojo y gris, cifras
-tabulares y adaptación automática a modo claro y oscuro.
+Stitch produjo un sistema de diseño llamado **«Industrial Inventory Ledger»**:
+paleta con rampas tonales sobre un verde de bodega `#1F5F4B`, papel cálido
+`#F7F6F3` como fondo, IBM Plex Sans para la interfaz e IBM Plex Mono para códigos
+SKU y cifras monetarias. El prompt completo y el análisis del resultado están en
+`docs/PROMPT-STITCH.md`.
+
+No todo lo que devolvió se adoptó. Su aportación más valiosa fue sustituir el
+rojo de alarma por un **terracota apagado `#7F443E`**: el rojo puro competía con
+el papel cálido del fondo, el terracota convive con él sin perder la lectura de
+alarma. En cambio se descartaron tres decisiones suyas —una barra de navegación
+inferior con secciones que el proyecto no tiene, miniaturas de imagen para un
+catálogo sin fotografías, y un formato móvil pese a haberse pedido web— porque
+contradecían el alcance o los datos reales.
+
+El diseño se materializó en código mediante el agente. Los tokens viven en
+`src/index.css` y quedaron fijados en la sección 3 de la skill
+`catalogo-mayorista`, que es la que obliga al agente a respetarlos en cualquier
+cambio posterior: ningún componente tiene permitido escribir un color literal.
 
 ## 4. Cumplimiento de las normativas
 

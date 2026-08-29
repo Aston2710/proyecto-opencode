@@ -2,16 +2,20 @@
 
 /* ---------------------------------------------------------------
    Tokens de diseño del Catálogo Mayorista.
-   Definidos completos en :root y redefinidos en modo oscuro.
-   Ningún color se declara únicamente dentro del bloque oscuro.
+
+   Sistema "Industrial Inventory Ledger", generado con Google Stitch
+   (ver docs/PROMPT-STITCH.md). Definidos completos en :root y
+   redefinidos en modo oscuro. Ningún color se declara únicamente
+   dentro del bloque oscuro.
    --------------------------------------------------------------- */
 :root {
-  --fondo: #f6f6f5;
+  /* Papel cálido, no blanco clínico. */
+  --fondo: #f7f6f3;
   --superficie: #ffffff;
-  --superficie-sutil: #fafaf9;
-  --borde: #e4e4e1;
-  --borde-fuerte: #d2d2ce;
-  --texto: #1a1a19;
+  --superficie-sutil: #faf9f6;
+  --borde: #e3e1dc;
+  --borde-fuerte: #d2cfc8;
+  --texto: #1a1918;
   --texto-medio: #57564f;
   --texto-tenue: #8b8a82;
   --acento: #1f5f4b;
@@ -21,20 +25,23 @@
   --ok-suave: #e7f2ea;
   --alerta: #a86413;
   --alerta-suave: #fbf0dd;
-  --critico: #a53024;
-  --critico-suave: #fbe9e7;
-  --neutro: #7c7b74;
-  --neutro-suave: #eeeeec;
-  --sombra: 0 1px 2px rgb(0 0 0 / 0.04);
+  /* Terracota apagado en lugar de rojo puro: convive con el papel
+     cálido en vez de pelearse con él. */
+  --critico: #7f443e;
+  --critico-suave: #f4e8e5;
+  --neutro: #757875;
+  --neutro-suave: #edece8;
+  --sombra: 0 1px 2px rgb(26 25 24 / 0.05);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --fondo: #131312;
-    --superficie: #1c1c1a;
-    --superficie-sutil: #232321;
-    --borde: #302f2c;
-    --borde-fuerte: #45443f;
+    /* Carbón cálido, nunca azulado ni negro puro. */
+    --fondo: #131211;
+    --superficie: #1c1b19;
+    --superficie-sutil: #232220;
+    --borde: #302e2b;
+    --borde-fuerte: #45433e;
     --texto: #f0efeb;
     --texto-medio: #b3b2aa;
     --texto-tenue: #86857d;
@@ -45,8 +52,8 @@
     --ok-suave: #17301f;
     --alerta: #d99b45;
     --alerta-suave: #33260f;
-    --critico: #e0796c;
-    --critico-suave: #351915;
+    --critico: #c98d84;
+    --critico-suave: #2f1d1a;
     --neutro: #91908a;
     --neutro-suave: #272724;
     --sombra: 0 1px 2px rgb(0 0 0 / 0.35);
@@ -54,6 +61,13 @@
 }
 
 @theme inline {
+  --font-sans:
+    'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --font-mono:
+    'IBM Plex Mono', ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Consolas,
+    'Liberation Mono', monospace;
+
   --color-fondo: var(--fondo);
   --color-superficie: var(--superficie);
   --color-superficie-sutil: var(--superficie-sutil);
@@ -87,14 +101,24 @@ body {
   margin: 0;
   background: var(--fondo);
   color: var(--texto);
-  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, sans-serif;
+  font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 14px;
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Todas las cifras alineadas verticalmente. */
+/* Códigos SKU y cualquier dato que se lea carácter a carácter. */
+code,
+kbd,
+samp,
+pre,
+.mono {
+  font-family: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', 'Cascadia Mono',
+    Consolas, 'Liberation Mono', monospace;
+}
+
+/* Todas las cifras alineadas verticalmente entre filas. */
 .cifras {
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum' 1;
