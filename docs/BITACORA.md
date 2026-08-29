@@ -175,6 +175,56 @@ Linux y en el entorno de compilación de Vercel.
 
 ---
 
+## E-07 · `npm install` girando durante media hora sin avanzar
+
+**Síntoma.** Tras reescribir `package.json` con nombre y scripts propios, todo
+`npm install` posterior dejaba de terminar. El proceso consumía CPU de forma
+sostenida —más de 500 segundos acumulados— pero `node_modules` no crecía ni un
+byte y no se imprimía ningún mensaje. Tres intentos se abandonaron por tiempo
+de espera.
+
+**Diagnóstico inicial equivocado.** Se atribuyó a lentitud de red y al antivirus
+inspeccionando `node_modules`. Dos señales lo desmentían: el registro respondía
+`200` al consultarlo directamente, y el proceso estaba gastando CPU en lugar de
+esperar en red. Un descargador lento espera; este calculaba.
+
+**Causa raíz.** Al reescribir `package.json` se anotaron rangos de versión de
+memoria, sin comprobarlos. Cuatro eran incorrectos y uno era imposible:
+
+| Declarado | Existente |
+| --- | --- |
+| `typescript: ~5.9.4` | 5.8.3 — **la versión no existe** |
+| `@vitejs/plugin-react: ^5.1.1` | 4.7.0 |
+| `eslint-plugin-react-hooks: ^7.1.0` | 5.2.0 |
+| `@eslint/js: ^9.39.1` | 9.39.5 |
+
+Ante un rango insatisfacible, el resolvedor de npm no falla de inmediato:
+retrocede y explora combinaciones alternativas del árbol completo buscando una
+que encaje. Como ninguna puede encajar, agota el espacio de búsqueda antes de
+rendirse. De ahí el consumo de CPU sin descargas y sin salida.
+
+**Cómo apareció el mensaje real.** Al ejecutar con `--legacy-peer-deps`, que
+recorta la exploración de dependencias de pares, el resolvedor llegó al final y
+por fin reportó:
+
+```
+npm error code ETARGET
+npm error notarget No matching version found for typescript@~5.9.4.
+```
+
+**Corrección.** Leer las versiones realmente instaladas y escribirlas:
+
+```
+foreach ($p in $paquetes) { (Get-Content "node_modules\$p\package.json" | ConvertFrom-Json).version }
+```
+
+**Lección incorporada.** Los rangos de versión no se escriben de memoria: se
+copian de lo instalado. Y cuando un proceso consume CPU sin producir salida ni
+tráfico, el problema no es de velocidad sino de una búsqueda que no puede
+terminar.
+
+---
+
 ## Casos de datos verificados
 
 Escenarios que el archivo origen produce y que la interfaz debe absorber sin
