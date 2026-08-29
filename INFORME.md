@@ -15,8 +15,7 @@
 > ### Pendientes antes de entregar
 >
 > - [x] Ejecutar la sesión de diseño en Google Stitch y aplicar el resultado.
-> - [ ] Guardar las capturas de la sesión de Stitch en `docs/diseño/`.
-> - [ ] Aplicar el prompt de refinamiento 6, que corrige el formato móvil a escritorio.
+> - [x] Guardar las capturas y el código exportado de Stitch en `docs/diseno/`.
 > - [ ] Completar el nombre del autor en la ficha superior.
 > - [ ] Pegar el enlace del repositorio y el de la aplicación desplegada.
 > - [ ] Borrar este bloque de pendientes.
@@ -77,13 +76,39 @@ paleta con rampas tonales sobre un verde de bodega `#1F5F4B`, papel cálido
 SKU y cifras monetarias. El prompt completo y el análisis del resultado están en
 `docs/PROMPT-STITCH.md`.
 
-No todo lo que devolvió se adoptó. Su aportación más valiosa fue sustituir el
-rojo de alarma por un **terracota apagado `#7F443E`**: el rojo puro competía con
-el papel cálido del fondo, el terracota convive con él sin perder la lectura de
-alarma. En cambio se descartaron tres decisiones suyas —una barra de navegación
-inferior con secciones que el proyecto no tiene, miniaturas de imagen para un
-catálogo sin fotografías, y un formato móvil pese a haberse pedido web— porque
-contradecían el alcance o los datos reales.
+No todo lo que devolvió se adoptó, y la parte descartada es mayor que la
+adoptada. Stitch entregó siete pantallas y un documento de sistema de diseño;
+las capturas y el código exportado están en `docs/diseno/`.
+
+**Lo que se adoptó** procede casi todo del documento de sistema: la escala
+tipográfica completa, la elección de IBM Plex Sans y Mono con cifras tabulares,
+el fondo de papel cálido y la filosofía de profundidad por capas tonales y
+líneas de 1 px en lugar de sombras. Su aportación propia más valiosa fue
+sustituir el rojo de alarma por un **terracota apagado**: el rojo puro competía
+con el papel cálido del fondo.
+
+**Lo que se descartó**, y por qué:
+
+| Decisión de Stitch | Motivo del rechazo |
+| --- | --- |
+| Campos `PESO`, `VOLUMEN`, `MATERIAL`, `ORIGEN`, `LEAD TIME`, `GARANTÍA`, `EAN`, `HS CODE`, `ÚLTIMA SINC.` en el panel de detalle | **No existen en el archivo de datos.** Contradicen frontalmente la norma 2 |
+| Fotografía de producto en cada tarjeta | El catálogo no tiene imágenes; serían marcadores vacíos |
+| Barra de navegación inferior con Pedidos, Inventario, Reportes | Secciones inexistentes: el proyecto es una sola vista |
+| Formato móvil en las siete pantallas | Se pidió web de escritorio dos veces, en el prompt base y en el refinamiento |
+| Paleta completa de Material 3 con `primary #004735` | Sustituía al verde ya definido y añadía cuarenta tokens para una sola vista |
+
+A esto se suma una **inconsistencia interna** entre pantallas: la navegación
+aparece en español en el tema claro y en inglés en el oscuro, el SKU adopta tres
+formatos distintos —`SKU-1029`, `AB-1001` y el real `SKU-0001`— y el estado de
+inventario se llama «Stock bajo» en una pantalla y «Poco Stock» en otra. La
+pantalla etiquetada como vista compacta de seis columnas no tiene seis columnas:
+sus indicadores son cajas vacías.
+
+La conclusión operativa fue **no insistir con más iteraciones**. El valor
+extraíble —sistema tipográfico, paleta y filosofía de elevación— ya estaba
+obtenido tras la segunda pasada, y las pantallas seguían contradiciendo el
+archivo de datos, que es la restricción que manda en este proyecto. Aceptar el
+diseño tal cual habría significado inventar nueve campos que el ERP no exporta.
 
 El diseño se materializó en código mediante el agente. Los tokens viven en
 `src/index.css` y quedaron fijados en la sección 3 de la skill
