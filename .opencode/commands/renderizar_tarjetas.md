@@ -1,7 +1,5 @@
 ---
-description: Genera o regenera la rejilla de tarjetas del catálogo derivando todo desde datos/productos.json, con tolerancia a nulos y semáforo de inventario.
-argument-hint: [ajuste opcional, ej. "agrega el proveedor al pie de la tarjeta"]
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash, PowerShell
+description: Genera o regenera la rejilla de tarjetas del catálogo derivando todo desde public/datos/productos.json, con tolerancia a nulos y semáforo de inventario.
 ---
 
 # /renderizar_tarjetas
@@ -16,7 +14,7 @@ Sigue estos pasos en orden, sin saltarte ninguno.
 ## Paso 1 — Leer el contrato real, no el asumido
 
 1. Carga la skill `catalogo-mayorista` y respétala como especificación.
-2. Lee `datos/productos.json`. No confíes en la memoria del esquema: recórrelo y
+2. Lee `public/datos/productos.json`. No confíes en la memoria del esquema: recórrelo y
    determina empíricamente
    - la lista de claves que aparecen en al menos un registro,
    - qué claves faltan en algún registro,

@@ -1,4 +1,4 @@
-# Catálogo Mayorista
+﻿# Catálogo Mayorista
 
 Panel de inventario que lee un archivo de datos externo y construye toda su
 interfaz a partir de él: métricas, filtros, gráfica y rejilla de tarjetas.

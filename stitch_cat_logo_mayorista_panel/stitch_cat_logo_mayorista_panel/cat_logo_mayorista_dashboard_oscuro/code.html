@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Catálogo Mayorista - Dark Mode</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@450&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "bg-dark": "#131211",
+                        "surface-dark": "#1C1B19",
+                        "border-dark": "#302E2B",
+                        "text-main": "#F0EFEB",
+                        "text-secondary": "#B3B2AA",
+                        "text-dimmed": "#86857D",
+                        "accent-dark": "#61B795",
+                        "accent-text": "#0D1C16",
+                        "status-available-dark": "#62B783",
+                        "status-low-dark": "#D99B45",
+                        "status-out-dark": "#E0796C"
+                    },
+                    spacing: {
+                        "md": "16px",
+                        "sm": "8px",
+                        "xs": "4px"
+                    },
+                    fontFamily: {
+                        "data-mono": ["IBM Plex Mono", "monospace"],
+                        "page-title": ["IBM Plex Sans", "sans-serif"],
+                        "card-title": ["IBM Plex Sans", "sans-serif"],
+                        "metadata": ["IBM Plex Sans", "sans-serif"],
+                        "indicator": ["IBM Plex Sans", "sans-serif"],
+                        "label-caps": ["IBM Plex Sans", "sans-serif"],
+                        "body-base": ["IBM Plex Sans", "sans-serif"]
+                    },
+                    fontSize: {
+                        "data-mono": ["13px", { lineHeight: "18px", fontWeight: "450" }],
+                        "page-title": ["19px", { lineHeight: "24px", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "card-title": ["15px", { lineHeight: "20px", fontWeight: "600" }],
+                        "metadata": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+                        "indicator": ["22px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "label-caps": ["11px", { lineHeight: "14px", letterSpacing: "0.04em", fontWeight: "500" }],
+                        "body-base": ["13px", { lineHeight: "18px", fontWeight: "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-bg-dark text-text-main font-body-base min-h-screen pb-[64px] md:pb-0 pt-[56px]">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface-dark border-b border-border-dark flex items-center justify-between px-md h-[56px] max-w-[1240px] mx-auto">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-text-main">grid_view</span>
+<h1 class="font-page-title text-page-title text-text-main">Catálogo Mayorista</h1>
+</div>
+<button class="flex items-center justify-center p-sm hover:bg-border-dark rounded transition-colors">
+<span class="material-symbols-outlined text-text-main">dark_mode</span>
+</button>
+</header>
+<main class="max-w-[1240px] mx-auto p-md space-y-md">
+<!-- Indicators 2x2 Grid -->
+<div class="grid grid-cols-2 gap-sm md:grid-cols-4 md:gap-md">
+<div class="bg-surface-dark border border-border-dark p-sm md:p-md rounded-sm">
+<p class="font-label-caps text-label-caps text-text-secondary uppercase mb-xs">PRODUCTOS VISIBLES</p>
+<p class="font-indicator text-indicator text-text-main">240</p>
+</div>
+<div class="bg-surface-dark border border-border-dark p-sm md:p-md rounded-sm">
+<p class="font-label-caps text-label-caps text-text-secondary uppercase mb-xs">PRECIO PROMEDIO</p>
+<p class="font-indicator text-indicator text-text-main">$247.80</p>
+</div>
+<div class="bg-surface-dark border border-border-dark p-sm md:p-md rounded-sm hidden md:block">
+<p class="font-label-caps text-label-caps text-text-secondary uppercase mb-xs">STOCK TOTAL</p>
+<p class="font-indicator text-indicator text-text-main">15,432</p>
+</div>
+<div class="bg-surface-dark border border-border-dark p-sm md:p-md rounded-sm hidden md:block">
+<p class="font-label-caps text-label-caps text-text-secondary uppercase mb-xs">ALERTAS DE STOCK</p>
+<p class="font-indicator text-indicator text-text-main">12</p>
+</div>
+</div>
+<!-- Filter Row -->
+<div class="flex items-center space-x-sm overflow-x-auto no-scrollbar py-xs">
+<button class="bg-accent-dark text-accent-text font-metadata text-metadata px-3 py-1.5 rounded-full border border-accent-dark whitespace-nowrap">Abarrotes</button>
+<button class="bg-surface-dark text-text-main border border-border-dark font-metadata text-metadata px-3 py-1.5 rounded-full whitespace-nowrap hover:bg-border-dark transition-colors">Limpieza</button>
+<button class="bg-surface-dark text-text-main border border-border-dark font-metadata text-metadata px-3 py-1.5 rounded-full whitespace-nowrap hover:bg-border-dark transition-colors">Bebidas</button>
+<button class="bg-surface-dark text-text-main border border-border-dark font-metadata text-metadata px-3 py-1.5 rounded-full whitespace-nowrap hover:bg-border-dark transition-colors">Lácteos</button>
+<button class="bg-surface-dark text-text-main border border-border-dark font-metadata text-metadata px-3 py-1.5 rounded-full whitespace-nowrap hover:bg-border-dark transition-colors">Snacks</button>
+</div>
+<!-- Active Filters -->
+<div class="flex items-center gap-xs font-metadata text-metadata text-text-secondary">
+<span>Filtros activos:</span>
+<span class="bg-border-dark px-2 py-0.5 rounded flex items-center gap-1 text-text-main">Abarrotes <span class="material-symbols-outlined text-[14px] cursor-pointer">close</span></span>
+</div>
+<!-- Product Cards List -->
+<div class="space-y-sm">
+<!-- Product 1 -->
+<div class="bg-surface-dark border border-border-dark p-sm rounded-md flex flex-row items-center gap-md">
+<div class="w-12 h-12 flex-shrink-0 bg-border-dark rounded-md border border-border-dark overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A moody, high-contrast product shot of a bag of premium rice on a dark slate surface. Low-key lighting highlights the texture of the packaging. The background is a very dark grey, nearly black, with a subtle spotlight effect. Professional food photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJ2TOifsRHFfbnmUk8J9rtURR3d6qEO3lysXm9jwy3fPAjtIlSJc3xx3Av5FZrk9LgjYX1FvurBDOjWb-2VF22K8-acjxDJj1bh3cjCjqzmvrBMLgcaI40goVGQE1bJg8NDWZyKGNAqYjcSJMZcGlLGN8gGx4dJMjDFs3890TFsDmq8dfitxgyRtcJdZmHFmCqhTLm3XKvT2dnXdNsRviTjQ3xm07IIKATQzhavljHkVXWr6nDtds"/>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-start mb-1">
+<span class="font-data-mono text-data-mono text-text-dimmed truncate">SKU: AB-1001</span>
+<span class="font-data-mono text-data-mono text-text-main">$24.50</span>
+</div>
+<h3 class="font-card-title text-card-title text-text-main truncate mb-1">Arroz Grano Largo 1kg</h3>
+<div class="flex items-center gap-sm">
+<span class="px-2 py-0.5 border border-border-dark text-text-secondary font-label-caps text-label-caps rounded-sm uppercase">Abarrotes</span>
+<div class="flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-status-available-dark"></span>
+<span class="font-metadata text-metadata text-text-secondary">Disponible (500)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Product 2 -->
+<div class="bg-surface-dark border border-border-dark p-sm rounded-md flex flex-row items-center gap-md">
+<div class="w-12 h-12 flex-shrink-0 bg-border-dark rounded-md border border-border-dark overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A dark and sophisticated product photo of a bottle of premium olive oil against a pitch-black background. A single, focused rim light catches the edge of the glass bottle, revealing the dark green liquid inside. Minimalist and sleek composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALJZHB4aLtF636kiPtr38D_ISYIkpZ3RZgVo1Nu806Hv-Hb-jfg5j3ipU0843t0LvZasZ_3y5QB3Aqrj3HBfiNcieeLjbYFzHNxdAIb-UxstLn5TsD839jqkMotAgUttn6KYGO2uPLJttUZfH6_WtA4BF3kdKkIyej4U-Hj3Syz4_kDsf6IV1xmmc_NcdeAl9upYwBRcZMgVh5hE97tzRsJSdIHmQy6n0Ihasa6uACDCKPl5ciobs"/>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-start mb-1">
+<span class="font-data-mono text-data-mono text-text-dimmed truncate">SKU: AB-1023</span>
+<span class="font-data-mono text-data-mono text-text-main">$145.00</span>
+</div>
+<h3 class="font-card-title text-card-title text-text-main truncate mb-1">Aceite de Oliva Extra Virgen 500ml</h3>
+<div class="flex items-center gap-sm">
+<span class="px-2 py-0.5 border border-border-dark text-text-secondary font-label-caps text-label-caps rounded-sm uppercase">Abarrotes</span>
+<div class="flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-status-low-dark"></span>
+<span class="font-metadata text-metadata text-text-secondary">Poco Stock (12)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Product 3 -->
+<div class="bg-surface-dark border border-border-dark p-sm rounded-md flex flex-row items-center gap-md">
+<div class="w-12 h-12 flex-shrink-0 bg-border-dark rounded-md border border-border-dark overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="An industrial-style photograph of a large can of crushed tomatoes on a dark metal table. The lighting is cinematic and moody, casting deep shadows that emphasize the cylindrical shape of the can. The overall palette is dark greys and blacks with a pop of muted red from the label." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4TZEw-Vo2zzsJeXDwpEZTGGz1oMuMw-AJypriBpUvVme2Lt5m-lspDYQwKgnpMwnN2wHP2g9As0qaAyFsdpgSOrG9TayCKJI3DmQnX0b1B1ozNRbugHIyZ1gaFsf3E9isUPmHN8CcCT7pH4lYW1tY0UclncpoMopNQU_Gv8P3vTGtFnSac-rwjJ-kiTV17XiffTKcC1qOffAYPF2d13epaz8r-EWhrKh9owIkjjYZhJa79L_D7zQ"/>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-start mb-1">
+<span class="font-data-mono text-data-mono text-text-dimmed truncate">SKU: AB-2044</span>
+<span class="font-data-mono text-data-mono text-text-main">$45.80</span>
+</div>
+<h3 class="font-card-title text-card-title text-text-main truncate mb-1">Tomate Triturado Lata 800g</h3>
+<div class="flex items-center gap-sm">
+<span class="px-2 py-0.5 border border-border-dark text-text-secondary font-label-caps text-label-caps rounded-sm uppercase">Abarrotes</span>
+<div class="flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-status-out-dark"></span>
+<span class="font-metadata text-metadata text-text-secondary">Agotado</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full h-[64px] flex justify-around items-center bg-surface-dark border-t border-border-dark px-sm md:hidden z-50">
+<a class="flex flex-col items-center justify-center text-text-secondary hover:text-text-main" href="#">
+<span class="material-symbols-outlined mb-1">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-border-dark text-text-main rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined mb-1">inventory_2</span>
+<span class="font-label-caps text-label-caps">Catalog</span>
+</a>
+<a class="flex flex-col items-center justify-center text-text-secondary hover:text-text-main" href="#">
+<span class="material-symbols-outlined mb-1">shopping_cart</span>
+<span class="font-label-caps text-label-caps">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-text-secondary hover:text-text-main" href="#">
+<span class="material-symbols-outlined mb-1">warning</span>
+<span class="font-label-caps text-label-caps">Alerts</span>
+</a>
+</nav>
+</body></html>

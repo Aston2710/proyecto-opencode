@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Catálogo Mayorista - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;450;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffffff",
+                        "secondary": "#605e57",
+                        "on-tertiary-fixed": "#380c0a",
+                        "outline": "#707974",
+                        "tertiary": "#632e29",
+                        "on-tertiary-container": "#ffb8b0",
+                        "outline-variant": "#bfc9c3",
+                        "on-tertiary-fixed-variant": "#6e3731",
+                        "primary-container": "#1f5f4b",
+                        "background": "#f8faf6",
+                        "on-primary-fixed-variant": "#0a513d",
+                        "inverse-on-surface": "#eff1ee",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#404944",
+                        "error-container": "#ffdad6",
+                        "surface": "#f8faf6",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e1e3e0",
+                        "surface-container-highest": "#e1e3e0",
+                        "surface-container": "#eceeeb",
+                        "surface-container-high": "#e7e9e5",
+                        "surface-container-low": "#f2f4f1",
+                        "surface-dim": "#d8dbd7",
+                        "on-primary-fixed": "#002117",
+                        "primary-fixed": "#b0f0d6",
+                        "on-surface": "#191c1b",
+                        "primary-fixed-dim": "#94d3ba",
+                        "on-background": "#191c1b",
+                        "tertiary-fixed": "#ffdad6",
+                        "secondary-fixed": "#e5e2d9",
+                        "tertiary-container": "#7f443e",
+                        "surface-bright": "#f8faf6",
+                        "secondary-fixed-dim": "#c9c6bd",
+                        "inverse-primary": "#94d3ba",
+                        "on-primary-container": "#97d7bd",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#004735",
+                        "surface-tint": "#2b6954",
+                        "tertiary-fixed-dim": "#ffb4ab",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#64635b",
+                        "inverse-surface": "#2e312f",
+                        "on-secondary-fixed-variant": "#484740",
+                        "on-secondary-fixed": "#1c1c16",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#e3dfd6",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "margin": "24px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "metadata": ["IBM Plex Sans"],
+                        "data-mono": ["IBM Plex Mono"],
+                        "card-title": ["IBM Plex Sans"],
+                        "body-base": ["IBM Plex Sans"],
+                        "label-caps": ["IBM Plex Sans"],
+                        "page-title": ["IBM Plex Sans"],
+                        "indicator": ["IBM Plex Sans"]
+                    },
+                    "fontSize": {
+                        "metadata": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "data-mono": ["13px", { "lineHeight": "18px", "fontWeight": "450" }],
+                        "card-title": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "body-base": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "label-caps": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+                        "page-title": ["19px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "indicator": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-feature-settings: "tnum" on; background-color: #F7F6F3; }
+        .border-fine { border: 1px solid #E3E1DC; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="text-on-surface pb-24">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface docked full-width top-0 h-[56px] border-b border-outline-variant dark:border-outline flat no shadows z-50 sticky">
+<div class="flex justify-between items-center px-gutter w-full max-w-[1240px] mx-auto h-full">
+<button class="text-primary dark:text-primary-fixed-dim hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors cursor-pointer active:opacity-80 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">inventory_2</span>
+</button>
+<h1 class="text-card-title font-card-title text-on-surface dark:text-on-surface">Catálogo Mayorista</h1>
+<button class="text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors cursor-pointer active:opacity-80 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+</div>
+</header>
+<main class="max-w-[1240px] mx-auto p-3">
+<!-- Indicators Grid -->
+<section class="grid grid-cols-2 gap-2 mb-4">
+<div class="bg-surface rounded-lg p-3 border-fine">
+<div class="font-label-caps text-label-caps text-secondary mb-1">PRODUCTOS VISIBLES</div>
+<div class="font-indicator text-indicator text-on-surface">240</div>
+</div>
+<div class="bg-surface rounded-lg p-3 border-fine">
+<div class="font-label-caps text-label-caps text-secondary mb-1">PRECIO PROMEDIO</div>
+<div class="font-indicator text-indicator text-on-surface">$247.80</div>
+</div>
+<div class="bg-surface rounded-lg p-3 border-fine">
+<div class="font-label-caps text-label-caps text-secondary mb-1">UNIDADES EN PISO</div>
+<div class="font-indicator text-indicator text-on-surface">108,432</div>
+</div>
+<div class="bg-surface rounded-lg p-3 border-fine">
+<div class="font-label-caps text-label-caps text-error mb-1">REQUIEREN ATENCIÓN</div>
+<div class="font-indicator text-indicator text-error">38</div>
+</div>
+</section>
+<!-- Product List Example -->
+<section class="space-y-2 mb-8">
+<div class="flex justify-between items-end mb-2">
+<div class="font-metadata text-metadata text-secondary">240 productos</div>
+<div class="font-metadata text-metadata text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">view_list</span> Compacta
+                </div>
+</div>
+<!-- Card 1: Disponible -->
+<div class="bg-surface rounded-lg border-fine p-3 flex gap-3 items-center">
+<div class="w-12 h-12 bg-surface-container rounded flex-shrink-0" data-alt="A small product thumbnail showing a generic box or item in a minimalist warehouse setting. High key lighting, functional aesthetic, neutral colors." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAA2_6eCWPcb9d77u6AEyz34eHrEZbz9lNMfuurJ1TppsVnXZptB3pRfjkIgfEfZutO9585Q0z76Pinpmx5xcQlCcJuO2DyzlaFAb_Jech513lo1gcu_SBH2VpU8Wv8zF0SXZXxzvyAyQ_YSJ0WN2MjLi08N1g__Q0KwFLsXYcrIqZPEV9jQM9WdNnBIAz6Gj8o9lzcR4ytCGv2Oq8eOPqoHsz8flDLveKwXRaQHK6b8nUp6JKMAKc')"></div>
+<div class="flex-grow">
+<div class="flex items-center gap-1.5 mb-1">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<span class="font-metadata text-metadata text-secondary">Disponible</span>
+</div>
+<div class="font-card-title text-card-title text-on-surface">Aceite Vegetal 1L</div>
+<div class="font-data-mono text-data-mono text-secondary">SKU-1029</div>
+</div>
+<div class="font-data-mono text-data-mono text-on-surface font-medium whitespace-nowrap">$1,240.00</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-surface dark:bg-surface fixed bottom-0 left-0 w-full flex justify-around items-center h-16 px-md pb-safe border-t border-outline-variant dark:border-outline z-50">
+<button class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary-container text-on-primary-container dark:text-on-primary-container rounded-xl px-3 py-1 transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined mb-1">grid_view</span>
+<span class="font-label-caps text-label-caps">Catálogo</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-3 py-1 hover:bg-surface-container-low dark:hover:bg-surface-container-low transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined mb-1">shopping_cart</span>
+<span class="font-label-caps text-label-caps">Pedidos</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-3 py-1 hover:bg-surface-container-low dark:hover:bg-surface-container-low transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined mb-1">warehouse</span>
+<span class="font-label-caps text-label-caps">Inventario</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-3 py-1 hover:bg-surface-container-low dark:hover:bg-surface-container-low transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined mb-1">analytics</span>
+<span class="font-label-caps text-label-caps">Reportes</span>
+</button>
+</nav>
+<div class="fixed inset-0 bg-black/40 z-[60] transition-opacity duration-300" id="product-drawer-overlay"></div><aside class="fixed top-0 right-0 h-full w-full max-w-[420px] bg-surface border-l border-fine z-[70] flex flex-col shadow-xl transition-transform duration-300 transform translate-x-0" id="product-drawer"><header class="flex justify-between items-center p-md border-b border-fine"><div class="flex flex-col"><h2 class="font-page-title text-page-title text-on-surface">Aceite Vegetal 1L</h2><span class="font-data-mono text-[11px] text-secondary">SKU-1029</span></div><button class="p-2 rounded-full hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined">close</span></button></header><div class="flex-grow overflow-y-auto p-md space-y-md"><div class="inline-flex items-center px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-label-caps text-label-caps">ABARROTES</div><div class="space-y-1"><div class="font-data-mono text-page-title font-semibold text-on-surface">$1,240.00</div><div class="flex items-center gap-2"><span class="font-metadata text-metadata text-secondary">Mayoreo: $1,180.00</span><span class="bg-error-container text-on-error-container px-1.5 rounded font-label-caps text-[10px]">-5%</span></div></div><div class="border-t border-fine pt-md"><table class="w-full text-left border-collapse"><tbody class="divide-y divide-outline-variant"><tr class="h-10"><td class="font-label-caps text-secondary w-1/2">MARCA</td><td class="font-body-base text-on-surface">Girasol Real</td></tr><tr class="h-10"><td class="font-label-caps text-secondary">PROVEEDOR</td><td class="font-body-base text-on-surface">Distribuidora Norte</td></tr><tr class="h-10"><td class="font-label-caps text-secondary">ALMACÉN</td><td class="font-body-base text-on-surface">Pasillo 4-B</td></tr><tr class="h-10"><td class="font-label-caps text-secondary">POR CAJA</td><td class="font-body-base text-on-surface">12 unidades</td></tr><tr class="h-10"><td class="font-label-caps text-secondary">MÍNIMO</td><td class="font-body-base text-on-surface">24 unidades</td></tr><tr class="h-10"><td class="font-label-caps text-secondary">AGREGADO</td><td class="font-body-base text-on-surface">12/10/2023</td></tr><tr class="h-10"><td class="font-label-caps text-secondary">PESO</td><td class="font-body-base text-on-surface">0.92 kg</td></tr><tr class="h-10"><td class="font-label-caps text-secondary">VOLUMEN</td><td class="font-body-base text-on-surface">1.1 L</td></tr><tr class="h-10"><td class="font-label-caps text-secondary">MATERIAL</td><td class="font-body-base text-on-surface">PET Reciclable</td></tr><tr class="h-10"><td class="font-label-caps text-secondary">ORIGEN</td><td class="font-body-base text-on-surface">México</td></tr><tr class="h-10"><td class="font-label-caps text-secondary">LEAD TIME</td><td class="font-body-base text-on-surface">48 horas</td></tr><tr class="h-10"><td class="font-label-caps text-secondary">GARANTÍA</td><td class="font-body-base text-on-surface">N/A</td></tr><tr class="h-10"><td class="font-label-caps text-secondary">EAN</td><td class="font-body-base text-on-surface">7501029384756</td></tr><tr class="h-10"><td class="font-label-caps text-secondary">HS CODE</td><td class="font-body-base text-secondary">Sin registrar</td></tr><tr class="h-10"><td class="font-label-caps text-secondary">ÚLTIMA SINC.</td><td class="font-body-base text-on-surface">Hace 2 horas</td></tr></tbody></table></div></div><footer class="p-md border-t border-fine bg-surface-container-lowest flex flex-col gap-2"><button class="w-full bg-primary text-on-primary h-12 rounded-lg font-medium active:scale-95 transition-transform">Agregar a orden</button><button class="w-full border border-outline text-primary h-12 rounded-lg font-medium active:scale-95 transition-transform">Ver movimientos</button></footer></aside></body></html>

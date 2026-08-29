@@ -1,6 +1,6 @@
----
+﻿---
 name: catalogo-mayorista
-description: Convenciones de datos, diseño y componentes del Catálogo Mayorista. Úsala siempre que se cree o modifique una vista, un componente, un filtro o una gráfica de este proyecto, o cuando haya que leer/derivar algo desde datos/productos.json.
+description: Convenciones de datos, diseño y componentes del Catálogo Mayorista. Úsala siempre que se cree o modifique una vista, un componente, un filtro o una gráfica de este proyecto, o cuando haya que leer/derivar algo desde public/datos/productos.json.
 ---
 
 # Skill: Catálogo Mayorista
@@ -10,7 +10,7 @@ debe respetarlas sin excepción.
 
 ## 1. La fuente de verdad es el archivo de datos
 
-`datos/productos.json` manda. Nunca escribas listas de categorías, marcas,
+`public/datos/productos.json` manda. Nunca escribas listas de categorías, marcas,
 proveedores, almacenes o rangos de precio en el código: **derívalos en tiempo de
 ejecución** desde el arreglo `productos`.
 

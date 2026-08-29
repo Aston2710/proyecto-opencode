@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cargando Inventario - Catálogo Mayorista</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@450&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#f8faf6",
+                        "on-primary-fixed-variant": "#10503e",
+                        "on-primary-fixed": "#002117",
+                        "inverse-primary": "#96d3ba",
+                        "tertiary-container": "#622f27",
+                        "border-fine": "#E3E1DC",
+                        "surface-container-low": "#f2f4f1",
+                        "surface-container": "#eceeeb",
+                        "on-secondary-container": "#65635b",
+                        "secondary-container": "#e3dfd6",
+                        "on-surface-variant": "#404944",
+                        "tertiary": "#471a13",
+                        "primary": "#002f22",
+                        "inverse-on-surface": "#eff1ee",
+                        "error-alert": "#ba1a1a",
+                        "surface-tint": "#2d6955",
+                        "status-available": "#004735",
+                        "surface-variant": "#e1e3e0",
+                        "on-tertiary-fixed-variant": "#6d382f",
+                        "inverse-surface": "#2e312f",
+                        "surface": "#f8faf6",
+                        "primary-fixed-dim": "#96d3ba",
+                        "tertiary-fixed": "#ffdad4",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#b2efd6",
+                        "on-surface": "#191c1b",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#bfc9c3",
+                        "surface-container-high": "#e7e9e5",
+                        "on-primary": "#ffffff",
+                        "navigation-active": "#1f5f4b",
+                        "on-tertiary-container": "#df978b",
+                        "primary-container": "#004735",
+                        "surface-bright": "#f8faf6",
+                        "secondary-fixed-dim": "#cac6bd",
+                        "on-tertiary-fixed": "#370e08",
+                        "on-secondary-fixed": "#1d1c16",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#484740",
+                        "surface-container-highest": "#e1e3e0",
+                        "surface-bg": "#F7F6F3",
+                        "outline": "#707974",
+                        "tertiary-fixed-dim": "#ffb4a8",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-background": "#191c1b",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#d8dbd7",
+                        "on-primary-container": "#79b59d",
+                        "secondary-fixed": "#e6e2d9",
+                        "secondary": "#605e57"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "lg": "24px",
+                        "margin": "24px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "page-title": ["IBM Plex Sans"],
+                        "label-caps": ["IBM Plex Sans"],
+                        "metadata": ["IBM Plex Sans"],
+                        "card-title": ["IBM Plex Sans"],
+                        "indicator": ["IBM Plex Sans"],
+                        "body-base": ["IBM Plex Sans"],
+                        "data-mono": ["IBM Plex Mono"]
+                    },
+                    "fontSize": {
+                        "page-title": ["19px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-caps": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+                        "metadata": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "card-title": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "indicator": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-base": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "data-mono": ["13px", { "lineHeight": "18px", "fontWeight": "450" }]
+                    },
+                    "animation": {
+                        "shimmer": "shimmer 1.5s infinite"
+                    },
+                    "keyframes": {
+                        "shimmer": {
+                            "0%": { "background-position": "-1000px 0" },
+                            "100%": { "background-position": "1000px 0" }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .shimmer-bg {
+            background: #e7e9e5;
+            background-image: linear-gradient(to right, #e7e9e5 0%, #f2f4f1 20%, #e7e9e5 40%, #e7e9e5 100%);
+            background-repeat: no-repeat;
+            background-size: 1000px 100%;
+        }
+    </style>
+</head>
+<body class="bg-surface-bg text-on-surface font-body-base antialiased pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="bg-surface text-on-surface docked full-width top-0 h-[56px] border-b border-outline-variant flat no shadows">
+<div class="flex justify-between items-center px-gutter w-full max-w-[1240px] mx-auto h-full">
+<button class="text-primary cursor-pointer active:opacity-80 p-2 hover:bg-surface-container-high transition-colors rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+</button>
+<h1 class="font-page-title text-page-title text-card-title font-card-title text-on-surface">Catálogo Mayorista</h1>
+<button class="text-primary cursor-pointer active:opacity-80 p-2 hover:bg-surface-container-high transition-colors rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+</button>
+</div>
+</header>
+<main class="w-full max-w-[1240px] mx-auto px-gutter mt-md">
+<!-- Filter Bar (from Context) -->
+<div class="flex items-center justify-between mb-md bg-surface p-2 border border-border-fine rounded">
+<div class="flex gap-2 w-full md:w-auto">
+<div class="shimmer-bg animate-shimmer h-[32px] w-[150px] rounded"></div>
+<div class="shimmer-bg animate-shimmer h-[32px] w-[100px] rounded"></div>
+</div>
+<div class="hidden md:flex gap-2">
+<div class="shimmer-bg animate-shimmer h-[32px] w-[80px] rounded"></div>
+</div>
+</div>
+<!-- Indicator Cards Skeletons -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-md mb-lg">
+<!-- Skeleton 1 -->
+<div class="bg-surface border border-border-fine p-3 rounded flex flex-col justify-between h-[80px]">
+<div class="shimmer-bg animate-shimmer h-[14px] w-2/3 rounded mb-2"></div>
+<div class="shimmer-bg animate-shimmer h-[28px] w-1/2 rounded"></div>
+</div>
+<!-- Skeleton 2 -->
+<div class="bg-surface border border-border-fine p-3 rounded flex flex-col justify-between h-[80px]">
+<div class="shimmer-bg animate-shimmer h-[14px] w-1/2 rounded mb-2"></div>
+<div class="shimmer-bg animate-shimmer h-[28px] w-2/3 rounded"></div>
+</div>
+<!-- Skeleton 3 -->
+<div class="bg-surface border border-border-fine p-3 rounded flex flex-col justify-between h-[80px]">
+<div class="shimmer-bg animate-shimmer h-[14px] w-3/4 rounded mb-2"></div>
+<div class="shimmer-bg animate-shimmer h-[28px] w-1/3 rounded"></div>
+</div>
+<!-- Skeleton 4 -->
+<div class="bg-surface border border-border-fine p-3 rounded flex flex-col justify-between h-[80px]">
+<div class="shimmer-bg animate-shimmer h-[14px] w-2/3 rounded mb-2"></div>
+<div class="shimmer-bg animate-shimmer h-[28px] w-1/2 rounded"></div>
+</div>
+</div>
+<!-- Product Grid Skeletons (12 Cards) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+<script>
+                // Generate 12 skeleton cards to keep HTML dry for the prompt
+                for(let i=0; i<12; i++) {
+                    document.write(`
+                        <div class="bg-surface border border-border-fine p-3 rounded flex items-start gap-md h-[90px]">
+                            <!-- Thumbnail Skeleton -->
+                            <div class="shimmer-bg animate-shimmer w-[48px] h-[48px] rounded-md shrink-0"></div>
+                            
+                            <!-- Content Skeleton -->
+                            <div class="flex-1 w-full">
+                                <!-- Title -->
+                                <div class="shimmer-bg animate-shimmer h-[20px] w-3/4 rounded mb-2"></div>
+                                <!-- SKU / Meta -->
+                                <div class="flex items-center gap-2 mb-1">
+                                    <div class="shimmer-bg animate-shimmer h-[16px] w-[80px] rounded"></div>
+                                    <div class="shimmer-bg animate-shimmer h-[8px] w-[8px] rounded-full"></div>
+                                </div>
+                                <!-- Price/Stock -->
+                                <div class="flex justify-between items-center mt-1">
+                                    <div class="shimmer-bg animate-shimmer h-[18px] w-[60px] rounded"></div>
+                                    <div class="shimmer-bg animate-shimmer h-[18px] w-[40px] rounded"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                }
+            </script>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden bg-surface fixed bottom-0 left-0 w-full flex justify-around items-center h-16 px-md pb-safe border-t border-outline-variant z-50">
+<!-- Catálogo (Active) -->
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-3 py-1 transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined" data-icon="grid_view" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+<span class="font-label-caps text-label-caps mt-1">Catálogo</span>
+</button>
+<!-- Pedidos (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1 hover:bg-surface-container-low transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-label-caps text-label-caps mt-1">Pedidos</span>
+</button>
+<!-- Inventario (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1 hover:bg-surface-container-low transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined" data-icon="warehouse">warehouse</span>
+<span class="font-label-caps text-label-caps mt-1">Inventario</span>
+</button>
+<!-- Reportes (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1 hover:bg-surface-container-low transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-caps text-label-caps mt-1">Reportes</span>
+</button>
+</nav>
+</body></html>

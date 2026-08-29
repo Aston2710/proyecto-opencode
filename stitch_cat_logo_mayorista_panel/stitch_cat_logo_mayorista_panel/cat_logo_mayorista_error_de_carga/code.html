@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Catálogo Mayorista - Error</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#f8faf6",
+                        "on-primary-fixed-variant": "#10503e",
+                        "on-primary-fixed": "#002117",
+                        "inverse-primary": "#96d3ba",
+                        "tertiary-container": "#622f27",
+                        "border-fine": "#E3E1DC",
+                        "surface-container-low": "#f2f4f1",
+                        "surface-container": "#eceeeb",
+                        "on-secondary-container": "#65635b",
+                        "secondary-container": "#e3dfd6",
+                        "on-surface-variant": "#404944",
+                        "tertiary": "#471a13",
+                        "primary": "#002f22",
+                        "inverse-on-surface": "#eff1ee",
+                        "error-alert": "#ba1a1a",
+                        "surface-tint": "#2d6955",
+                        "status-available": "#004735",
+                        "surface-variant": "#e1e3e0",
+                        "on-tertiary-fixed-variant": "#6d382f",
+                        "inverse-surface": "#2e312f",
+                        "surface": "#f8faf6",
+                        "primary-fixed-dim": "#96d3ba",
+                        "tertiary-fixed": "#ffdad4",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#b2efd6",
+                        "on-surface": "#191c1b",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#bfc9c3",
+                        "surface-container-high": "#e7e9e5",
+                        "on-primary": "#ffffff",
+                        "navigation-active": "#1f5f4b",
+                        "on-tertiary-container": "#df978b",
+                        "primary-container": "#004735",
+                        "surface-bright": "#f8faf6",
+                        "secondary-fixed-dim": "#cac6bd",
+                        "on-tertiary-fixed": "#370e08",
+                        "on-secondary-fixed": "#1d1c16",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#484740",
+                        "surface-container-highest": "#e1e3e0",
+                        "surface-bg": "#F7F6F3",
+                        "outline": "#707974",
+                        "tertiary-fixed-dim": "#ffb4a8",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-background": "#191c1b",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#d8dbd7",
+                        "on-primary-container": "#79b59d",
+                        "secondary-fixed": "#e6e2d9",
+                        "secondary": "#605e57"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "lg": "24px",
+                        "margin": "24px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "xs": "4px",
+                        "safe": "env(safe-area-inset-bottom)"
+                    },
+                    "fontFamily": {
+                        "page-title": ["IBM Plex Sans"],
+                        "label-caps": ["IBM Plex Sans"],
+                        "metadata": ["IBM Plex Sans"],
+                        "card-title": ["IBM Plex Sans"],
+                        "indicator": ["IBM Plex Sans"],
+                        "body-base": ["IBM Plex Sans"],
+                        "data-mono": ["IBM Plex Mono"]
+                    },
+                    "fontSize": {
+                        "page-title": ["19px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-caps": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+                        "metadata": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "card-title": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "indicator": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-base": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "data-mono": ["13px", { "lineHeight": "18px", "fontWeight": "450" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom base styles ensuring functional minimalism */
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Attenuated state utility */
+        .attenuated-layer {
+            opacity: 0.4;
+            pointer-events: none;
+            filter: grayscale(20%);
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+<!-- TopAppBar Container (Attenuated) -->
+<div class="attenuated-layer bg-surface border-b border-outline-variant w-full sticky top-0 z-10 transition-opacity">
+<header class="flex justify-between items-center px-gutter w-full max-w-[1240px] mx-auto h-[56px]">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="inventory_2" data-weight="fill" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<h1 class="text-card-title font-card-title text-on-surface">Catálogo Mayorista</h1>
+</div>
+<div class="flex items-center">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-full cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+</button>
+</div>
+</header>
+<!-- Filter Bar (Attenuated) -->
+<div class="w-full max-w-[1240px] mx-auto px-gutter py-2 flex gap-2 overflow-x-auto hide-scrollbar border-t border-fine bg-surface-container-lowest">
+<div class="flex-1 flex items-center bg-surface-container-low border border-border-fine rounded-DEFAULT px-3 py-1.5 min-w-[200px]">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px] mr-2">search</span>
+<span class="font-body-base text-body-base text-on-surface-variant">Buscar SKU, nombre...</span>
+</div>
+<div class="flex items-center bg-surface border border-border-fine rounded-DEFAULT px-3 py-1.5 whitespace-nowrap">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px] mr-2">filter_list</span>
+<span class="font-label-caps text-label-caps text-on-surface">FILTROS</span>
+</div>
+<div class="flex items-center bg-surface border border-border-fine rounded-DEFAULT px-3 py-1.5 whitespace-nowrap">
+<span class="font-label-caps text-label-caps text-on-surface">DISPONIBILIDAD</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px] ml-1">arrow_drop_down</span>
+</div>
+</div>
+</div>
+<!-- Main Content Area with Critical Alert Strip -->
+<main class="flex-1 w-full max-w-[1240px] mx-auto px-gutter py-md z-20 relative">
+<!-- Error Alert Strip -->
+<div class="bg-error-container border border-error-alert rounded-DEFAULT p-3 flex flex-col sm:flex-row gap-3 items-start sm:items-center shadow-sm relative overflow-hidden">
+<!-- Subtle accent strip on the left -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-error-alert"></div>
+<div class="flex items-center gap-3 flex-1 pl-2">
+<div class="bg-surface-container-lowest p-1.5 rounded-full border border-error-alert/20 shrink-0">
+<span class="material-symbols-outlined text-error-alert" data-icon="error" data-weight="fill" style="font-variation-settings: 'FILL' 1;">error</span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-card-title text-card-title text-on-error-container">No se pudo cargar el archivo de datos</h2>
+<p class="font-metadata text-metadata text-on-error-container opacity-80 mt-xs">El servidor respondió 500 al pedir el catálogo.</p>
+</div>
+</div>
+<div class="shrink-0 w-full sm:w-auto flex justify-end mt-2 sm:mt-0">
+<button class="bg-surface-container-lowest border border-error-alert text-error-alert hover:bg-error-alert hover:text-on-error font-label-caps text-label-caps px-4 py-2 rounded-DEFAULT transition-colors w-full sm:w-auto">
+                    REINTENTAR
+                </button>
+</div>
+</div>
+<!-- Ghost / Skeleton content below to reinforce the attenuated state context -->
+<div class="attenuated-layer mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+<!-- Skeleton Card 1 -->
+<div class="bg-surface border border-border-fine rounded-DEFAULT p-3 flex items-start gap-3">
+<div class="w-12 h-12 bg-surface-container-high rounded-md shrink-0"></div>
+<div class="flex-1 space-y-2">
+<div class="h-4 bg-surface-container-high w-3/4 rounded-sm"></div>
+<div class="h-3 bg-surface-container-high w-1/2 rounded-sm"></div>
+</div>
+</div>
+<!-- Skeleton Card 2 -->
+<div class="bg-surface border border-border-fine rounded-DEFAULT p-3 flex items-start gap-3">
+<div class="w-12 h-12 bg-surface-container-high rounded-md shrink-0"></div>
+<div class="flex-1 space-y-2">
+<div class="h-4 bg-surface-container-high w-2/3 rounded-sm"></div>
+<div class="h-3 bg-surface-container-high w-1/3 rounded-sm"></div>
+</div>
+</div>
+<!-- Skeleton Card 3 -->
+<div class="bg-surface border border-border-fine rounded-DEFAULT p-3 flex items-start gap-3">
+<div class="w-12 h-12 bg-surface-container-high rounded-md shrink-0"></div>
+<div class="flex-1 space-y-2">
+<div class="h-4 bg-surface-container-high w-4/5 rounded-sm"></div>
+<div class="h-3 bg-surface-container-high w-1/2 rounded-sm"></div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Visible on Mobile, Hidden on Desktop md+) -->
+<!-- Kept fully opaque to allow navigation away from the error state -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-16 px-md pb-safe border-t border-outline-variant bg-surface z-50">
+<!-- Active: Catálogo -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-3 py-1 transition-all duration-200 active:scale-95 group" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:bg-surface-container-low transition-colors" data-icon="grid_view" data-weight="fill" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+<span class="font-label-caps text-label-caps mt-1">Catálogo</span>
+</a>
+<!-- Inactive: Pedidos -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1 transition-all duration-200 active:scale-95 group hover:bg-surface-container-low rounded-xl" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-label-caps text-label-caps mt-1">Pedidos</span>
+</a>
+<!-- Inactive: Inventario -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1 transition-all duration-200 active:scale-95 group hover:bg-surface-container-low rounded-xl" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="warehouse">warehouse</span>
+<span class="font-label-caps text-label-caps mt-1">Inventario</span>
+</a>
+<!-- Inactive: Reportes -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1 transition-all duration-200 active:scale-95 group hover:bg-surface-container-low rounded-xl" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="analytics">analytics</span>
+<span class="font-label-caps text-label-caps mt-1">Reportes</span>
+</a>
+</nav>
+<!-- Spacer for mobile nav -->
+<div class="h-16 md:hidden w-full"></div>
+</body></html>

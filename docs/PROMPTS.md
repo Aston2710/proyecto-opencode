@@ -1,4 +1,4 @@
-# Registro de prompts
+﻿# Registro de prompts
 
 Instrucciones que se dieron al agente para construir el proyecto, en el orden en
 que ocurrieron. Se transcriben tal cual se escribieron.

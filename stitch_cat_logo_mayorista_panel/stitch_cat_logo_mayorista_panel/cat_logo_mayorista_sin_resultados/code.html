@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Catálogo Mayorista - Empty State</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@450&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "background": "#f8faf6",
+                      "on-primary-fixed-variant": "#10503e",
+                      "on-primary-fixed": "#002117",
+                      "inverse-primary": "#96d3ba",
+                      "tertiary-container": "#622f27",
+                      "border-fine": "#E3E1DC",
+                      "surface-container-low": "#f2f4f1",
+                      "surface-container": "#eceeeb",
+                      "on-secondary-container": "#65635b",
+                      "secondary-container": "#e3dfd6",
+                      "on-surface-variant": "#404944",
+                      "tertiary": "#471a13",
+                      "primary": "#002f22",
+                      "inverse-on-surface": "#eff1ee",
+                      "error-alert": "#ba1a1a",
+                      "surface-tint": "#2d6955",
+                      "status-available": "#004735",
+                      "surface-variant": "#e1e3e0",
+                      "on-tertiary-fixed-variant": "#6d382f",
+                      "inverse-surface": "#2e312f",
+                      "surface": "#f8faf6",
+                      "primary-fixed-dim": "#96d3ba",
+                      "tertiary-fixed": "#ffdad4",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed": "#b2efd6",
+                      "on-surface": "#191c1b",
+                      "on-error-container": "#93000a",
+                      "on-secondary": "#ffffff",
+                      "outline-variant": "#bfc9c3",
+                      "surface-container-high": "#e7e9e5",
+                      "on-primary": "#ffffff",
+                      "navigation-active": "#1f5f4b",
+                      "on-tertiary-container": "#df978b",
+                      "primary-container": "#004735",
+                      "surface-bright": "#f8faf6",
+                      "secondary-fixed-dim": "#cac6bd",
+                      "on-tertiary-fixed": "#370e08",
+                      "on-secondary-fixed": "#1d1c16",
+                      "on-error": "#ffffff",
+                      "on-secondary-fixed-variant": "#484740",
+                      "surface-container-highest": "#e1e3e0",
+                      "surface-bg": "#F7F6F3",
+                      "outline": "#707974",
+                      "tertiary-fixed-dim": "#ffb4a8",
+                      "on-tertiary": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "on-background": "#191c1b",
+                      "error": "#ba1a1a",
+                      "surface-dim": "#d8dbd7",
+                      "on-primary-container": "#79b59d",
+                      "secondary-fixed": "#e6e2d9",
+                      "secondary": "#605e57"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter": "16px",
+                      "lg": "24px",
+                      "margin": "24px",
+                      "sm": "8px",
+                      "md": "16px",
+                      "xl": "32px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "page-title": [
+                              "IBM Plex Sans"
+                      ],
+                      "label-caps": [
+                              "IBM Plex Sans"
+                      ],
+                      "metadata": [
+                              "IBM Plex Sans"
+                      ],
+                      "card-title": [
+                              "IBM Plex Sans"
+                      ],
+                      "indicator": [
+                              "IBM Plex Sans"
+                      ],
+                      "body-base": [
+                              "IBM Plex Sans"
+                      ],
+                      "data-mono": [
+                              "IBM Plex Mono"
+                      ]
+              },
+              "fontSize": {
+                      "page-title": [
+                              "19px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-caps": [
+                              "11px",
+                              {
+                                      "lineHeight": "14px",
+                                      "letterSpacing": "0.04em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "metadata": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "card-title": [
+                              "15px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "indicator": [
+                              "22px",
+                              {
+                                      "lineHeight": "28px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-base": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "data-mono": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "450"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+</head>
+<body class="bg-surface-bg text-on-surface min-h-screen pb-[80px] md:pb-0 font-body-base text-body-base">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline sticky top-0 z-40 h-[56px] flex items-center justify-center">
+<div class="flex justify-between items-center px-gutter w-full max-w-[1240px] mx-auto">
+<div class="flex items-center gap-sm cursor-pointer hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors p-sm rounded-lg active:opacity-80 text-primary dark:text-primary-fixed-dim">
+<span class="material-symbols-outlined" data-icon="inventory_2" data-weight="fill" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+</div>
+<h1 class="text-card-title font-card-title text-on-surface dark:text-on-surface font-page-title text-page-title">
+                Catálogo Mayorista
+            </h1>
+<div class="flex items-center gap-sm cursor-pointer hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors p-sm rounded-lg active:opacity-80 text-on-surface-variant dark:text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+</div>
+</div>
+</header>
+<!-- Filter Bar (Reused from SCREEN_4 equivalent) -->
+<section class="bg-surface border-b border-fine z-30 sticky top-[56px]">
+<div class="max-w-[1240px] mx-auto px-gutter py-3 flex flex-col sm:flex-row gap-3 items-center justify-between">
+<div class="flex items-center gap-3 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 no-scrollbar">
+<div class="flex items-center gap-2 border border-fine rounded-full px-3 py-1.5 bg-surface-container-low whitespace-nowrap">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="filter_list" style="font-size: 16px;">filter_list</span>
+<span class="font-metadata text-metadata text-on-surface-variant">Filtros Activos: 2</span>
+</div>
+<div class="flex items-center gap-2 border border-primary rounded-full px-3 py-1.5 bg-surface whitespace-nowrap">
+<span class="font-metadata text-metadata text-primary">Categoría: Motores</span>
+<button class="text-primary hover:text-on-surface transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="close" style="font-size: 14px;">close</span>
+</button>
+</div>
+<div class="flex items-center gap-2 border border-primary rounded-full px-3 py-1.5 bg-surface whitespace-nowrap">
+<span class="font-metadata text-metadata text-primary">Stock: Menor a 10</span>
+<button class="text-primary hover:text-on-surface transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="close" style="font-size: 14px;">close</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-2 w-full sm:w-auto">
+<div class="relative w-full sm:w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search" style="font-size: 18px;">search</span>
+<input class="w-full pl-9 pr-3 py-1.5 bg-surface border border-fine rounded-md font-body-base text-body-base text-on-surface focus:outline-none focus:border-primary transition-colors h-[32px] placeholder:text-on-surface-variant" placeholder="Buscar por SKU..." type="text"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Content: Empty State -->
+<main class="max-w-[1240px] mx-auto px-gutter py-lg flex justify-center items-center h-[calc(100vh-150px)]">
+<div class="w-full border-2 border-dashed border-outline-variant rounded-xl p-[80px] flex flex-col items-center justify-center text-center bg-surface">
+<h2 class="font-card-title text-card-title text-on-surface mb-2">
+                Ningún producto coincide
+            </h2>
+<p class="font-body-base text-body-base text-on-surface-variant max-w-[380px] mb-6">
+                Los filtros activos no dejan resultados en el catálogo. Ajusta la búsqueda o vuelve al listado completo.
+            </p>
+<button class="bg-primary text-on-primary font-metadata text-metadata px-4 py-2 rounded-md hover:bg-surface-tint transition-colors flex items-center gap-2 active:scale-95">
+                Limpiar filtros
+            </button>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="bg-surface dark:bg-surface border-t border-outline-variant dark:border-outline fixed bottom-0 left-0 w-full flex justify-around items-center h-16 px-md pb-safe z-50 md:hidden">
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary-container text-on-primary-container dark:text-on-primary-container rounded-xl px-3 py-1 transition-all duration-200 active:scale-95 group" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="grid_view" data-weight="fill" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+<span class="font-label-caps text-label-caps font-page-title text-page-title text-primary">Catálogo</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-3 py-1 hover:bg-surface-container-low dark:hover:bg-surface-container-low rounded-xl transition-all duration-200 active:scale-95 group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:text-primary transition-colors" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-label-caps text-label-caps font-page-title text-page-title text-primary group-hover:text-primary transition-colors">Pedidos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-3 py-1 hover:bg-surface-container-low dark:hover:bg-surface-container-low rounded-xl transition-all duration-200 active:scale-95 group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:text-primary transition-colors" data-icon="warehouse">warehouse</span>
+<span class="font-label-caps text-label-caps font-page-title text-page-title text-primary group-hover:text-primary transition-colors">Inventario</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-3 py-1 hover:bg-surface-container-low dark:hover:bg-surface-container-low rounded-xl transition-all duration-200 active:scale-95 group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:text-primary transition-colors" data-icon="analytics">analytics</span>
+<span class="font-label-caps text-label-caps font-page-title text-page-title text-primary group-hover:text-primary transition-colors">Reportes</span>
+</a>
+</nav>
+<style>
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+</body></html>

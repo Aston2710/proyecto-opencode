@@ -1,7 +1,5 @@
 ---
-description: Lanza el agente auditor-datos sobre datos/productos.json y convierte su reporte en tareas concretas de interfaz.
-argument-hint: [campo específico a auditar, ej. "stock"]
-allowed-tools: Agent, Read, Bash, PowerShell
+description: Lanza el agente auditor-datos sobre public/datos/productos.json y convierte su reporte en tareas concretas de interfaz.
 ---
 
 # /auditar_datos
@@ -10,10 +8,11 @@ Enfoque solicitado: **$ARGUMENTS** (si viene vacío, audita el archivo completo)
 
 ## Paso 1 — Delegar
 
-Invoca al agente `auditor-datos` con esta instrucción:
+Invoca al subagente `@auditor-datos` con esta instrucción:
 
-> Audita `datos/productos.json` siguiendo tu procedimiento completo. Enfoque: $ARGUMENTS.
-> Devuelve censo de claves, tabla de anomalías, tabla de requisitos de interfaz y veredicto.
+> Audita `public/datos/productos.json` siguiendo tu procedimiento completo.
+> Enfoque: $ARGUMENTS. Devuelve censo de claves, tabla de anomalías, tabla de
+> requisitos de interfaz y veredicto.
 
 No hagas tú la auditoría. El agente es el dueño de esa tarea.
 
