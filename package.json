@@ -1,0 +1,35 @@
+{
+  "name": "catalogo-mayorista",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Panel de catálogo mayorista generado con agentes de IA. Proyecto final del Curso de Desarrollo con Inteligencia Artificial.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "datos": "node scripts/generar-datos.mjs",
+    "verificar": "tsc --noEmit && eslint . && vite build"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "recharts": "^3.3.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@tailwindcss/vite": "^4.2.4",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^5.1.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.1.0",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "tailwindcss": "^4.2.4",
+    "typescript": "~5.9.4",
+    "typescript-eslint": "^8.48.1",
+    "vite": "^6.4.3"
+  }
+}
