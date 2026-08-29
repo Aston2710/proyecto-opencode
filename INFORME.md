@@ -59,7 +59,7 @@ Construido con Vite, React 19, TypeScript, Tailwind CSS v4 y Recharts.
 
 | Función | Herramienta |
 | --- | --- |
-| Agente de desarrollo | OpenCode — generación de todo el código, refactorización y depuración |
+| Agente de desarrollo | Agente de IA en terminal, en modos Plan y Build — generación de todo el código, refactorización y depuración |
 | Diseño de interfaz | **Google Stitch** |
 | Control de versiones | Git y GitHub |
 | Despliegue | Vercel |
