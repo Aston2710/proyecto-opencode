@@ -16,7 +16,7 @@
 >
 > - [x] Ejecutar la sesión de diseño en Google Stitch y aplicar el resultado.
 > - [x] Guardar las capturas y el código exportado de Stitch en `docs/diseno/`.
-> - [ ] **Abrir el proyecto con OpenCode y comprobar que su configuración carga**: la skill `catalogo-mayorista`, los comandos `/renderizar_tarjetas` y `/auditar_datos`, y el subagente `@auditor-datos`.
+> - [x] Abrir el proyecto con OpenCode y comprobar que su configuración carga: los comandos `/renderizar_tarjetas` y `/auditar_datos` aparecen en el menú.
 > - [ ] Completar el nombre del autor en la ficha superior.
 > - [ ] Pegar el enlace del repositorio y el de la aplicación desplegada.
 > - [ ] Borrar este bloque de pendientes.
@@ -61,18 +61,24 @@ Construido con Vite, React 19, TypeScript, Tailwind CSS v4 y Recharts.
 | Función | Herramienta |
 | --- | --- |
 | Agente de desarrollo | **OpenCode**, en modos Plan y Build — generación de todo el código, refactorización y depuración |
-| Proveedor de modelo | **OpenRouter** (BYOK) |
+| Proveedor de modelo | **Google AI Studio** y **OpenRouter** (BYOK) |
 | Diseño de interfaz | **Google Stitch** |
 | Control de versiones | Git y GitHub |
 | Despliegue | Vercel |
 
 ### Sobre el entorno de agentes
 
-Se trabajó con **OpenCode** conectado a **OpenRouter** bajo el esquema BYOK
-(*bring your own key*) que contemplan las directrices del curso. La
-configuración del agente no vive en ajustes locales de la máquina sino
-versionada en el repositorio, de modo que cualquiera que lo clone obtenga el
-mismo comportamiento:
+Se trabajó con **OpenCode** bajo el esquema BYOK (*bring your own key*) que
+contemplan las directrices del curso, usando dos proveedores de modelo según la
+tarea: la **API de Google AI Studio** y **OpenRouter**.
+
+Poder alternar de proveedor sin tocar el proyecto es consecuencia directa de
+dónde vive la configuración. Las instrucciones, la skill, los comandos y el
+subagente no dependen de un modelo concreto: describen el contrato de datos y el
+procedimiento a seguir, no cómo lo ejecuta un motor en particular. La
+configuración tampoco vive en ajustes locales de la máquina, sino versionada en
+el repositorio, de modo que cualquiera que lo clone obtenga el mismo
+comportamiento:
 
 ```
 AGENTS.md                                    Instrucciones de proyecto
