@@ -1,5 +1,5 @@
-import type { EstadoInventario, FiltrosCatalogo, OpcionFiltro, OrdenCatalogo } from '../tipos'
-import { ETIQUETAS_INVENTARIO, formatearEntero } from '../utilidades'
+﻿import type { FiltroInventario, FiltrosCatalogo, OpcionFiltro, OrdenCatalogo } from '../tipos'
+import { etiquetaFiltroInventario, formatearEntero } from '../utilidades'
 
 interface Props {
   filtros: FiltrosCatalogo
@@ -8,8 +8,9 @@ interface Props {
   onAlternarCategoria: (categoria: string) => void
 }
 
-const ESTADOS_INVENTARIO: Array<EstadoInventario | 'todos'> = [
+const ESTADOS_INVENTARIO: FiltroInventario[] = [
   'todos',
+  'atencion',
   'disponible',
   'bajo',
   'agotado',
@@ -70,7 +71,7 @@ export function BarraFiltros({ filtros, categorias, onCambiar, onAlternarCategor
           >
             {ESTADOS_INVENTARIO.map((estado) => (
               <option key={estado} value={estado}>
-                {estado === 'todos' ? 'Todos' : ETIQUETAS_INVENTARIO[estado]}
+                {etiquetaFiltroInventario(estado)}
               </option>
             ))}
           </select>

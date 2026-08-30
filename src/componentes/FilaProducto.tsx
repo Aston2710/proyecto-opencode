@@ -8,6 +8,7 @@ import {
   formatearMoneda,
   textoOpcional,
 } from '../utilidades'
+import { MedidorStock } from './MedidorStock'
 
 interface Props {
   producto: Producto
@@ -16,9 +17,9 @@ interface Props {
 }
 
 /**
- * Fila de producto del catálogo, en el formato horizontal del sistema de
- * diseño: distintivo, SKU y precio arriba, nombre, y pie con categoría e
- * inventario.
+ * Fila de producto. Las tres columnas de la derecha —medidor, existencias y
+ * precio— tienen ancho fijo, de modo que se alinean entre filas y se pueden
+ * recorrer con la vista como las columnas de un libro de inventario.
  *
  * Ningún campo se lee directamente: todos pasan por los ayudantes de formato,
  * de modo que un `null` del archivo origen nunca llega al DOM.
@@ -47,32 +48,17 @@ export function FilaProducto({ producto, densidad, onAbrir }: Props) {
       </span>
 
       <span className="min-w-0 grow">
-        <span className="mb-1 flex items-baseline justify-between gap-md">
-          <span className="t-mono truncate text-texto-tenue">SKU {producto.id}</span>
-          <span
-            className={`t-mono shrink-0 ${
-              producto.precioUnitario === null ? 'text-texto-tenue' : 'text-texto'
-            }`}
-          >
-            {formatearMoneda(producto.precioUnitario)}
-          </span>
-        </span>
+        <span className="t-mono block truncate text-texto-tenue">SKU {producto.id}</span>
+        <span className="t-card-title block truncate text-texto">{producto.nombre}</span>
 
-        <span className="t-card-title mb-1 block truncate text-texto">{producto.nombre}</span>
-
-        <span className="flex flex-wrap items-center gap-sm">
-          <span className="t-label-caps rounded-sm border border-borde px-2 py-0.5 text-texto-medio">
+        <span className="mt-0.5 flex flex-wrap items-center gap-sm">
+          <span className="t-label-caps rounded-sm border border-borde px-1.5 py-0.5 text-texto-medio">
             {producto.categoria}
           </span>
 
-          <span className="flex items-center gap-xs">
+          <span className={`t-metadata flex items-center gap-xs ${estilo.texto}`}>
             <span className={`size-2 shrink-0 rounded-full ${estilo.punto}`} aria-hidden="true" />
-            <span className={`t-metadata ${estilo.texto}`}>
-              {ETIQUETAS_INVENTARIO[estado]}
-              {typeof producto.stock === 'number' ? (
-                <span className="cifras text-texto-medio"> ({formatearEntero(producto.stock)})</span>
-              ) : null}
-            </span>
+            {ETIQUETAS_INVENTARIO[estado]}
           </span>
 
           {producto.descuento > 0 ? (
@@ -97,6 +83,28 @@ export function FilaProducto({ producto, densidad, onAbrir }: Props) {
             </span>
           ) : null}
         </span>
+      </span>
+
+      {/* Columna del medidor: se oculta en pantallas estrechas, donde no hay
+          sitio para leerla y el semáforo ya dice lo mismo. */}
+      <span className="hidden w-[88px] shrink-0 sm:block">
+        <MedidorStock producto={producto} />
+      </span>
+
+      <span
+        className={`t-mono hidden w-[76px] shrink-0 text-right sm:block ${
+          producto.stock === null ? 'text-texto-tenue' : estilo.texto
+        }`}
+      >
+        {formatearEntero(producto.stock)}
+      </span>
+
+      <span
+        className={`t-mono w-[104px] shrink-0 text-right ${
+          producto.precioUnitario === null ? 'text-texto-tenue' : 'text-texto'
+        }`}
+      >
+        {formatearMoneda(producto.precioUnitario)}
       </span>
     </button>
   )

@@ -47,10 +47,17 @@ export interface OpcionFiltro {
 /** Densidad de la lista de resultados. */
 export type Densidad = 'comoda' | 'compacta'
 
+/**
+ * Filtro de inventario. `atencion` agrupa lo que hay que reponer —bajo mínimo y
+ * agotado— porque es la pregunta que se hace de verdad, y ningún estado suelto
+ * la responde.
+ */
+export type FiltroInventario = EstadoInventario | 'todos' | 'atencion'
+
 export interface FiltrosCatalogo {
   busqueda: string
   categorias: string[]
-  inventario: EstadoInventario | 'todos'
+  inventario: FiltroInventario
   soloActivos: boolean
   soloDescuento: boolean
   orden: OrdenCatalogo

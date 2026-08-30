@@ -1,4 +1,5 @@
 import type { Densidad, Producto } from '../tipos'
+import { EncabezadoLista } from './EncabezadoLista'
 import { EstadoVacio } from './EstadoVacio'
 import { FilaProducto } from './FilaProducto'
 
@@ -19,12 +20,15 @@ export function ListaProductos({ productos, densidad, onLimpiar, onAbrir }: Prop
   }
 
   return (
-    <ul className={`flex flex-col ${densidad === 'comoda' ? 'gap-sm' : 'gap-xs'}`}>
-      {productos.map((producto) => (
-        <li key={producto.id}>
-          <FilaProducto producto={producto} densidad={densidad} onAbrir={onAbrir} />
-        </li>
-      ))}
-    </ul>
+    <div>
+      <EncabezadoLista />
+      <ul className={`flex flex-col ${densidad === 'comoda' ? 'gap-sm' : 'gap-xs'}`}>
+        {productos.map((producto) => (
+          <li key={producto.id}>
+            <FilaProducto producto={producto} densidad={densidad} onAbrir={onAbrir} />
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }

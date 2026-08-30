@@ -5,7 +5,7 @@
  * Es la única capa autorizada para decidir qué se muestra cuando falta un dato,
  * de modo que la regla no quede repartida por el JSX.
  */
-import type { EstadoInventario, Producto } from './tipos'
+import type { EstadoInventario, FiltroInventario, Producto } from './tipos'
 
 const formateadorMoneda = new Intl.NumberFormat('es-MX', {
   style: 'currency',
@@ -67,6 +67,21 @@ export function clasificarInventario(producto: Producto): EstadoInventario {
   if (producto.stock <= 0) return 'agotado'
   if (producto.stock < producto.stockMinimo) return 'bajo'
   return 'disponible'
+}
+
+/** Nombre visible de cualquier valor del filtro de inventario. */
+export function etiquetaFiltroInventario(valor: FiltroInventario): string {
+  if (valor === 'todos') return 'Todos'
+  if (valor === 'atencion') return 'Requieren atención'
+  return ETIQUETAS_INVENTARIO[valor]
+}
+
+/**
+ * Un producto «requiere atención» cuando está por debajo de su mínimo o
+ * agotado. Los que no tienen stock registrado quedan fuera: no se sabe.
+ */
+export function requiereAtencion(estado: EstadoInventario): boolean {
+  return estado === 'bajo' || estado === 'agotado'
 }
 
 export const ETIQUETAS_INVENTARIO: Record<EstadoInventario, string> = {

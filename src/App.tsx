@@ -62,7 +62,15 @@ export default function App() {
               </p>
             ) : null}
 
-            <PanelMetricas metricas={metricas} />
+            <PanelMetricas
+              metricas={metricas}
+              filtrandoAtencion={filtros.inventario === 'atencion'}
+              onVerAtencion={() =>
+                actualizarFiltros({
+                  inventario: filtros.inventario === 'atencion' ? 'todos' : 'atencion',
+                })
+              }
+            />
 
             <BarraFiltros
               filtros={filtros}

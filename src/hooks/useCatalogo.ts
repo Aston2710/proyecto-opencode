@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Única capa que conoce el origen de los datos.
  *
  * Carga el archivo base por `fetch` en tiempo de ejecución: sustituir
@@ -20,9 +20,10 @@ import type {
 } from '../tipos'
 import {
   clasificarInventario,
-  ETIQUETAS_INVENTARIO,
+  etiquetaFiltroInventario,
   normalizar,
   promedioSeguro,
+  requiereAtencion,
   sumaSegura,
 } from '../utilidades'
 
@@ -146,8 +147,13 @@ export function useCatalogo() {
         return false
       }
 
-      if (filtros.inventario !== 'todos' && clasificarInventario(producto) !== filtros.inventario) {
-        return false
+      if (filtros.inventario !== 'todos') {
+        const estado = clasificarInventario(producto)
+        const coincide =
+          filtros.inventario === 'atencion'
+            ? requiereAtencion(estado)
+            : estado === filtros.inventario
+        if (!coincide) return false
       }
 
       if (termino === '') return true
@@ -264,7 +270,7 @@ export function useCatalogo() {
     if (filtros.inventario !== 'todos') {
       activos.push({
         clave: 'inventario',
-        etiqueta: ETIQUETAS_INVENTARIO[filtros.inventario],
+        etiqueta: etiquetaFiltroInventario(filtros.inventario),
         quitar: () => actualizarFiltros({ inventario: 'todos' }),
       })
     }
