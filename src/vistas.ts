@@ -50,6 +50,12 @@ export const VISTAS_GUARDADAS: VistaGuardada[] = [
     descripcion: 'Dados de baja del catálogo',
     filtros: { actividad: 'inactivos' },
   },
+  {
+    clave: 'descuento-sin-precio',
+    nombre: 'Descuento sin precio',
+    descripcion: 'La promoción no se puede aplicar',
+    filtros: { soloDescuento: true, soloSinPrecio: true },
+  },
 ]
 
 export function buscarVista(clave: string): VistaGuardada | undefined {

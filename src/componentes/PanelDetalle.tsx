@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react'
+﻿import { useEffect, useRef } from 'react'
 import type { Producto } from '../tipos'
 import {
   clasificarInventario,
+  descuentoAplicable,
   ESTILOS_INVENTARIO,
   ETIQUETAS_INVENTARIO,
   formatearAntiguedad,
@@ -219,12 +220,19 @@ export function PanelDetalle({ producto, onCerrar }: Props) {
 
             <p className="t-metadata mt-2 flex flex-wrap items-center gap-2 text-texto-medio">
               <span className="cifras">Mayoreo: {formatearMoneda(producto.precioMayoreo)}</span>
-              {producto.descuento > 0 ? (
+              {descuentoAplicable(producto) ? (
                 <span className="cifras rounded-full bg-acento-suave px-2 py-0.5 text-acento">
                   -{producto.descuento}%
                 </span>
               ) : null}
             </p>
+
+            {producto.descuento > 0 && !descuentoAplicable(producto) ? (
+              <p className="t-metadata mt-2 rounded border border-alerta bg-alerta-suave px-2 py-1.5 text-alerta">
+                Tiene una regla de descuento del {producto.descuento} % pero no hay precio
+                registrado sobre el que aplicarla.
+              </p>
+            ) : null}
 
             <p className="mt-3 flex items-center gap-xs">
               <span className={`size-2 rounded-full ${estilo.punto}`} aria-hidden="true" />

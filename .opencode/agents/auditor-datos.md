@@ -42,7 +42,13 @@ Marca y cuantifica cada una de estas condiciones:
 - **Rango inválido** — `stock` o precios negativos, `descuento` fuera de 0-100,
   `unidadesPorCaja` menor a 1.
 - **Incoherencia interna** — `precioMayoreo` mayor o igual que `precioUnitario`,
-  `stock` positivo en un producto `activo: false`.
+  `stock` positivo en un producto `activo: false`, `descuento` mayor que cero
+  con `precioUnitario` en `null`, `codigoArancelario` presente con `origen`
+  nacional o ausente.
+
+  Estas son distintas de los huecos: los campos existen y son válidos por
+  separado, pero juntos describen algo imposible. La interfaz no debe
+  renderizarlas como si tuvieran sentido.
 - **Fecha inválida** — `fechaAlta` que no cumpla `YYYY-MM-DD` o que no sea una
   fecha real.
 - **Identificador duplicado** — `id` repetido.

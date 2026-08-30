@@ -168,6 +168,12 @@ export function inventariarHuecos(productos: Producto[]): HuecoCatalogo[] {
       conteo: contar((p) => !p.activo && typeof p.stock === 'number' && p.stock > 0),
       consecuencia: 'Capital inmovilizado que no se vende',
     },
+    {
+      clave: 'descuento-sin-precio',
+      etiqueta: 'Con descuento y sin precio',
+      conteo: contar((p) => p.descuento > 0 && p.precioUnitario === null),
+      consecuencia: 'La promoción no se puede aplicar',
+    },
   ].filter((hueco) => hueco.conteo > 0)
 }
 

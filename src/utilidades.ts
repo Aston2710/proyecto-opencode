@@ -162,6 +162,23 @@ export function formatearAntiguedad(iso: string | null | undefined): string {
   return formateadorRelativo.format(Math.round(horas / 24), 'day')
 }
 
+/**
+ * Un descuento solo significa algo si hay un precio del que descontarlo.
+ *
+ * El archivo origen permite que un producto tenga regla de descuento y no
+ * tenga precio capturado: son dos altas distintas del ERP. Mostrar «-18 %»
+ * junto a «Sin precio» haría pasar por sensata una combinación que no lo es,
+ * así que el porcentaje no se dibuja y la incoherencia se reporta aparte, en
+ * el estado de captura del catálogo.
+ */
+export function descuentoAplicable(producto: Producto): boolean {
+  return (
+    producto.descuento > 0 &&
+    typeof producto.precioUnitario === 'number' &&
+    Number.isFinite(producto.precioUnitario)
+  )
+}
+
 /** Nombre visible de cualquier valor del filtro de inventario. */
 export function etiquetaFiltroInventario(valor: FiltroInventario): string {
   if (valor === 'todos') return 'Todos'

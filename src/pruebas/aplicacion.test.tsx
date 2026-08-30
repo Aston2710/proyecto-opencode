@@ -176,6 +176,22 @@ describe('tolerancia a campos ausentes en la vista', () => {
     expect(texto).not.toContain('undefined')
   })
 
+  it('no anuncia un descuento cuando no hay precio del que descontarlo', async () => {
+    simularRespuesta(
+      archivoCon([
+        { ...productoBase, id: 'SKU-0001', nombre: 'Sin tarifa', precioUnitario: null, descuento: 18 },
+        { ...productoBase, id: 'SKU-0002', nombre: 'Con tarifa', precioUnitario: 200, descuento: 25 },
+      ]),
+    )
+
+    const texto = await montar()
+
+    // Un porcentaje sobre un precio inexistente no es información: haría
+    // pasar por sensata una combinación que no lo es.
+    expect(texto).not.toContain('-18%')
+    expect(texto).toContain('-25%')
+  })
+
   it('distingue el stock ausente del agotado', async () => {
     simularRespuesta(
       archivoCon([

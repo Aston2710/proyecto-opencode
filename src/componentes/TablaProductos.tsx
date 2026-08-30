@@ -1,6 +1,7 @@
-import type { CampoOrden, Densidad, OrdenCatalogo, Producto } from '../tipos'
+﻿import type { CampoOrden, Densidad, OrdenCatalogo, Producto } from '../tipos'
 import {
   clasificarInventario,
+  descuentoAplicable,
   ESTILOS_INVENTARIO,
   ETIQUETAS_INVENTARIO,
   formatearEntero,
@@ -237,7 +238,7 @@ export function TablaProductos({
                   >
                     {formatearMoneda(producto.precioUnitario)}
                   </span>
-                  {producto.descuento > 0 ? (
+                  {descuentoAplicable(producto) ? (
                     <span className="t-metadata cifras block text-acento">
                       -{producto.descuento}%
                     </span>
