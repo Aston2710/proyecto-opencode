@@ -1,24 +1,22 @@
 import { useState } from 'react'
 import { AvisoError } from './componentes/AvisoError'
-import { BarraFiltros } from './componentes/BarraFiltros'
+import { BarraHerramientas } from './componentes/BarraHerramientas'
 import { BarraSuperior } from './componentes/BarraSuperior'
 import { EsqueletoCatalogo } from './componentes/EsqueletoCatalogo'
-import { FiltrosActivos } from './componentes/FiltrosActivos'
 import { GraficaCategorias } from './componentes/GraficaCategorias'
-import { ListaProductos } from './componentes/ListaProductos'
 import { Paginacion } from './componentes/Paginacion'
 import { PanelDetalle } from './componentes/PanelDetalle'
 import { PanelMetricas } from './componentes/PanelMetricas'
+import { TablaProductos } from './componentes/TablaProductos'
 import { useCatalogo } from './hooks/useCatalogo'
 import { useTema } from './hooks/useTema'
-import type { Densidad, Producto } from './tipos'
+import type { Producto } from './tipos'
 import { formatearEntero } from './utilidades'
 
 export default function App() {
   const {
     estado,
     mensajeError,
-    meta,
     descartados,
     categorias,
     resultados,
@@ -36,6 +34,7 @@ export default function App() {
     actualizarFiltros,
     alternarCategoria,
     limpiarFiltros,
+    ordenarPor,
     reintentar,
   } = useCatalogo()
 
@@ -44,9 +43,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-fondo">
-      <BarraSuperior meta={meta} esOscuro={esOscuro} onAlternarTema={alternar} />
+      <BarraSuperior esOscuro={esOscuro} onAlternarTema={alternar} />
 
-      <main className="mx-auto flex max-w-[1240px] flex-col gap-md p-md">
+      <main className="mx-auto flex max-w-[1240px] flex-col gap-md px-md py-md">
         {estado === 'cargando' ? <EsqueletoCatalogo /> : null}
 
         {estado === 'error' ? (
@@ -72,40 +71,42 @@ export default function App() {
               }
             />
 
-            <BarraFiltros
+            <BarraHerramientas
               filtros={filtros}
               categorias={categorias}
+              filtrosActivos={filtrosActivos}
+              densidad={densidad}
               onCambiar={actualizarFiltros}
               onAlternarCategoria={alternarCategoria}
+              onLimpiar={limpiarFiltros}
+              onCambiarDensidad={setDensidad}
             />
 
-            <FiltrosActivos filtros={filtrosActivos} onLimpiar={limpiarFiltros} />
-
-            <GraficaCategorias datos={serieCategorias} />
-
-            <div className="flex flex-wrap items-center justify-between gap-md">
-              <p aria-live="polite" className="t-body cifras text-texto-medio">
-                {formatearEntero(resultados.length)} producto
-                {resultados.length === 1 ? '' : 's'} en pantalla
-              </p>
-              <SelectorDensidad densidad={densidad} onCambiar={setDensidad} />
-            </div>
-
-            <ListaProductos
+            <TablaProductos
               productos={productosPagina}
               densidad={densidad}
+              orden={filtros.orden}
               seleccionado={seleccionado}
+              onOrdenar={ordenarPor}
               onLimpiar={limpiarFiltros}
               onAbrir={setSeleccionado}
             />
 
-            <Paginacion
-              pagina={pagina}
-              totalPaginas={totalPaginas}
-              rango={rango}
-              total={resultados.length}
-              onIr={irAPagina}
-            />
+            <div className="flex flex-wrap items-center justify-between gap-md">
+              <p className="t-metadata text-texto-tenue">
+                En la columna <span className="text-texto-medio">Reorden</span>, la marca vertical
+                señala el mínimo de cada producto.
+              </p>
+              <Paginacion
+                pagina={pagina}
+                totalPaginas={totalPaginas}
+                rango={rango}
+                total={resultados.length}
+                onIr={irAPagina}
+              />
+            </div>
+
+            <GraficaCategorias datos={serieCategorias} />
           </>
         ) : null}
       </main>
@@ -119,43 +120,6 @@ export default function App() {
       </footer>
 
       <PanelDetalle producto={seleccionado} onCerrar={() => setSeleccionado(null)} />
-    </div>
-  )
-}
-
-function SelectorDensidad({
-  densidad,
-  onCambiar,
-}: {
-  densidad: Densidad
-  onCambiar: (valor: Densidad) => void
-}) {
-  const opciones: Array<{ valor: Densidad; etiqueta: string }> = [
-    { valor: 'comoda', etiqueta: 'Cómoda' },
-    { valor: 'compacta', etiqueta: 'Compacta' },
-  ]
-
-  return (
-    <div
-      role="group"
-      aria-label="Densidad de la lista"
-      className="flex items-center gap-1 rounded border border-borde bg-superficie p-0.5"
-    >
-      {opciones.map((opcion) => (
-        <button
-          key={opcion.valor}
-          type="button"
-          aria-pressed={densidad === opcion.valor}
-          onClick={() => onCambiar(opcion.valor)}
-          className={`t-metadata h-7 rounded-sm px-2.5 transition-colors ${
-            densidad === opcion.valor
-              ? 'bg-superficie-alta text-texto'
-              : 'text-texto-tenue hover:text-texto-medio'
-          }`}
-        >
-          {opcion.etiqueta}
-        </button>
-      ))}
     </div>
   )
 }

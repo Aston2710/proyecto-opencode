@@ -77,12 +77,19 @@ export interface FiltrosCatalogo {
   orden: OrdenCatalogo
 }
 
-export type OrdenCatalogo =
-  | 'nombre-asc'
-  | 'precio-asc'
-  | 'precio-desc'
-  | 'stock-desc'
-  | 'reciente'
+/** Columnas por las que se puede ordenar pulsando su encabezado. */
+export type CampoOrden =
+  | 'id'
+  | 'nombre'
+  | 'categoria'
+  | 'stock'
+  | 'plazoEntregaHoras'
+  | 'precioUnitario'
+
+export interface OrdenCatalogo {
+  campo: CampoOrden
+  direccion: 'asc' | 'desc'
+}
 
 /** Una etiqueta removible de la fila de filtros activos. */
 export interface FiltroActivo {

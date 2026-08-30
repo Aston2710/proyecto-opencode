@@ -103,7 +103,8 @@ describe('carga con el archivo de datos real', () => {
 
     const texto = await montar()
 
-    expect(texto).toContain('en pantalla')
+    expect(texto).toContain('Mostrando')
+    expect(contenedor.querySelector('table')).not.toBeNull()
     expect(errores).not.toHaveBeenCalled()
   })
 
@@ -124,8 +125,24 @@ describe('carga con el archivo de datos real', () => {
     const texto = await montar()
 
     expect(texto).toContain('Mostrando 1–24 de 240')
-    expect(contenedor.querySelectorAll('ul li').length).toBe(24)
+    expect(contenedor.querySelectorAll('tbody tr').length).toBe(24)
     expect(contenedor.querySelector('nav[aria-label="Paginación de resultados"]')).not.toBeNull()
+  })
+
+  it('expone los resultados como una tabla con encabezados ordenables', async () => {
+    simularRespuesta(archivoReal)
+    await montar()
+
+    // Una tabla de verdad: un lector de pantalla anuncia filas y columnas en
+    // lugar de una ristra de botones sueltos.
+    const encabezados = [...contenedor.querySelectorAll('thead th')]
+    expect(encabezados.length).toBeGreaterThan(4)
+    expect(encabezados.every((th) => th.getAttribute('scope') === 'col')).toBe(true)
+
+    // La columna por la que se ordena declara su sentido.
+    const ordenada = contenedor.querySelector('thead th[aria-sort]')
+    expect(ordenada).not.toBeNull()
+    expect(ordenada?.getAttribute('aria-sort')).toBe('ascending')
   })
 })
 

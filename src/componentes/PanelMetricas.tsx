@@ -16,7 +16,8 @@ interface Props {
 }
 
 /**
- * Fila de indicadores del conjunto filtrado.
+ * Franja única de indicadores, dividida por líneas de 1 px en lugar de cuatro
+ * tarjetas sueltas: son un solo bloque de lectura, no cuatro objetos.
  *
  * Los promedios y sumas ignoran los registros sin dato: contarlos como cero
  * distorsionaría las cifras y ocultaría el hueco del archivo origen.
@@ -55,18 +56,17 @@ export function PanelMetricas({ metricas, filtrandoAtencion, onVerAtencion }: Pr
   ]
 
   return (
+    // El hueco de 1 px sobre fondo de borde dibuja las divisiones exactas en
+    // cualquier reacomodo de la rejilla, sin bordes condicionales por celda.
     <section
       aria-label="Indicadores del catálogo"
-      className="grid grid-cols-2 gap-sm md:grid-cols-4 md:gap-md"
+      className="grid grid-cols-2 gap-px overflow-hidden rounded border border-borde bg-borde md:grid-cols-4"
     >
       {indicadores.map((indicador) => (
-        <div
-          key={indicador.etiqueta}
-          className="rounded border border-borde bg-superficie p-sm md:p-md"
-        >
+        <div key={indicador.etiqueta} className="bg-superficie px-md py-3">
           <p className="t-label-caps text-texto-tenue">{indicador.etiqueta}</p>
-          <p className="t-indicator mt-xs text-texto">{indicador.valor}</p>
-          <p className="t-metadata cifras mt-xs text-texto-medio">{indicador.nota}</p>
+          <p className="t-indicator mt-1 text-texto">{indicador.valor}</p>
+          <p className="t-metadata cifras mt-0.5 text-texto-tenue">{indicador.nota}</p>
         </div>
       ))}
 
@@ -74,28 +74,20 @@ export function PanelMetricas({ metricas, filtrandoAtencion, onVerAtencion }: Pr
         type="button"
         onClick={onVerAtencion}
         aria-pressed={filtrandoAtencion}
-        className={`rounded border p-sm text-left transition-colors md:p-md ${
-          filtrandoAtencion
-            ? 'border-critico bg-critico-suave'
-            : 'border-borde bg-superficie hover:border-critico hover:bg-critico-suave'
+        className={`px-md py-3 text-left transition-colors ${
+          filtrandoAtencion ? 'bg-critico-suave' : 'bg-superficie hover:bg-critico-suave'
         }`}
       >
         <p className="t-label-caps flex items-center justify-between gap-2 text-critico">
           Requieren atención
-          <svg
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-            className="size-3.5 shrink-0"
-            fill="none"
-            stroke="currentColor"
-          >
-            <path d="m9 6 6 6-6 6" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <span className="t-metadata font-normal normal-case tracking-normal">
+            {filtrandoAtencion ? 'Ver todo' : 'Ver solo estos'}
+          </span>
         </p>
-        <p className={`t-indicator mt-xs ${atencion > 0 ? 'text-critico' : 'text-texto'}`}>
+        <p className={`t-indicator mt-1 ${atencion > 0 ? 'text-critico' : 'text-texto'}`}>
           {formatearEntero(atencion)}
         </p>
-        <p className="t-metadata cifras mt-xs text-texto-medio">
+        <p className="t-metadata cifras mt-0.5 text-texto-tenue">
           {formatearEntero(bajos)} bajos · {formatearEntero(agotados)} agotados
         </p>
       </button>

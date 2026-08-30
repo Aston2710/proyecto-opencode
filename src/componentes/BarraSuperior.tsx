@@ -1,18 +1,17 @@
-import type { MetaCatalogo } from '../tipos'
-import { formatearEntero } from '../utilidades'
-
 interface Props {
-  meta: MetaCatalogo | null
   esOscuro: boolean
   onAlternarTema: () => void
 }
 
 /**
- * Barra superior fija de 56 px. Marca, procedencia del archivo y conmutador
- * de tema. La procedencia se oculta en pantallas estrechas para que el título
- * nunca compita con ella.
+ * Barra superior fija de 56 px: marca y conmutador de tema.
+ *
+ * Antes mostraba también la procedencia del archivo, el número de registros y
+ * la versión del esquema. Eso es información de depuración: no le sirve a
+ * quien consulta el catálogo y competía con el título. Sigue disponible en el
+ * archivo y en la documentación.
  */
-export function BarraSuperior({ meta, esOscuro, onAlternarTema }: Props) {
+export function BarraSuperior({ esOscuro, onAlternarTema }: Props) {
   return (
     <header className="sticky top-0 z-40 h-[56px] border-b border-borde bg-superficie">
       <div className="mx-auto flex h-full max-w-[1240px] items-center justify-between gap-md px-md">
@@ -34,27 +33,6 @@ export function BarraSuperior({ meta, esOscuro, onAlternarTema }: Props) {
         </div>
 
         <div className="flex items-center gap-md">
-          {meta !== null ? (
-            <dl className="t-metadata hidden items-center gap-3 text-texto-tenue md:flex">
-              <div className="flex gap-1">
-                <dt>Origen</dt>
-                <dd className="text-texto-medio">{meta.fuente}</dd>
-              </div>
-              <span aria-hidden="true">·</span>
-              <div className="flex gap-1">
-                <dt className="sr-only">Registros</dt>
-                <dd className="cifras text-texto-medio">
-                  {formatearEntero(meta.totalRegistros)} registros
-                </dd>
-              </div>
-              <span aria-hidden="true">·</span>
-              <div className="flex gap-1">
-                <dt className="sr-only">Versión</dt>
-                <dd className="cifras text-texto-medio">v{meta.version}</dd>
-              </div>
-            </dl>
-          ) : null}
-
           <button
             type="button"
             onClick={onAlternarTema}

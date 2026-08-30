@@ -100,9 +100,15 @@ Prohibidos: degradados, glassmorphism, ilustraciones, emojis.
 - **Semáforo de inventario:** `--ok` = stock sano, `--alerta` = bajo el mínimo, `--critico` (terracota apagado) = agotado, `--neutro` = sin dato. El color **nunca** comunica solo: siempre punto de color más texto.
 - **Tipografía:** una clase por rol, definidas en `index.css`. No inventes tamaños sueltos: usa `.t-page-title` (19/600), `.t-indicator` (22/600), `.t-card-title` (15/600), `.t-body` (13/400), `.t-metadata` (12/500), `.t-label-caps` (11/500 mayúsculas) y `.t-mono` (13/450, IBM Plex Mono para SKUs y cifras). Añade `cifras` a todo lo numérico.
 - **Forma:** rejilla base de 4 px, con utilidades `xs`/`sm`/`md`/`lg`/`xl` (4/8/16/24/32). Radio: `rounded-sm` 2px en distintivos, `rounded` 4px en contenedores y controles, `rounded-full` solo en chips.
-- **La lista es una tabla, no tarjetas.** Es una herramienta de escritorio para leer muchas filas de un vistazo. Las filas no llevan borde propio ni esquinas redondeadas: se separan con una línea de 1 px y viven dentro de un único contenedor. Las columnas tienen **ancho fijo** para que las cifras se apilen y se puedan recorrer con la vista.
-- **Columnas, en orden:** distintivo · SKU · producto · categoría · estado · reorden · existencias · entrega · unitario · descuento. Las secundarias se ocultan por punto de ruptura (`sm`, `md`, `lg`, `xl`), nunca se comprimen.
-- **El encabezado de columnas queda fijo** bajo la barra superior. Perder los rótulos al bajar obliga a subir para recordar qué columna es cuál.
+- **La lista es una `<table>` de verdad**, no tarjetas ni divs: `<thead>`, `<tbody>`, `<th scope="col">` y `<caption>`. Un lector de pantalla debe anunciar filas y columnas, no una ristra de botones. Anchos por `<colgroup>` con `table-fixed`.
+- **Columnas, en orden:** SKU · producto · categoría · estado · reorden · existencias · entrega · unitario. Las secundarias se ocultan por punto de ruptura (`sm`, `md`, `lg`, `xl`), nunca se comprimen.
+- **Ordenar se hace desde el encabezado**, no desde un desplegable aparte. La columna activa declara `aria-sort`; la primera pulsación ordena ascendente y la siguiente invierte. Los valores ausentes van siempre al final: un hueco no es «el más barato».
+- **El encabezado de columnas queda fijo** bajo la barra superior. Cuidado: un ancestro con `overflow-hidden` crea un contenedor de scroll y desplaza el elemento pegajoso; no lo pongas.
+- **Como máximo tres contenedores** en la vista principal: franja de indicadores, barra de herramientas y tabla. Lo secundario va tras un desplegable o al pie. Cada caja nueva compite con las demás.
+- **Ningún dato se muestra dos veces.** Si el conteo ya está en los indicadores, no se repite sobre la tabla.
+- **Nada de metadatos de depuración en la interfaz** (procedencia del archivo, versión del esquema, rutas). Van en la documentación.
+- **Los conteos de los chips se calculan con el resto de filtros aplicados**, omitiendo el de categoría: deben anticipar lo que se encontraría al pulsarlos.
+- **Estado inactivo:** etiqueta visible junto al nombre. Nunca `opacity` sobre la fila entera, que hunde el contraste del texto secundario por debajo de AA.
 - **Medidor de reorden:** regleta por fila con la marca del mínimo fija en el mismo tercio en todas. Sirve para detectar faltantes recorriendo la columna, sin leer cifras. Sin stock registrado no se dibuja barra: estimarla sería inventar el dato.
 - **Modo oscuro:** carbón cálido, nunca azulado ni negro puro. Tres estados: claro por omisión, oscuro por `prefers-color-scheme`, y ambos forzables con `data-tema` en `<html>`. Ningún color se declara solo dentro del bloque oscuro.
 

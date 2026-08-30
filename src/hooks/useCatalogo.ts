@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Única capa que conoce el origen de los datos.
  *
  * Carga el archivo base por `fetch` en tiempo de ejecución: sustituir
@@ -11,11 +11,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type {
   ArchivoCatalogo,
+  CampoOrden,
   Densidad,
   FiltroActivo,
   FiltrosCatalogo,
   MetaCatalogo,
   OpcionFiltro,
+  OrdenCatalogo,
   Producto,
 } from '../tipos'
 import {
@@ -38,7 +40,7 @@ export const FILTROS_INICIALES: FiltrosCatalogo = {
   inventario: 'todos',
   soloActivos: false,
   soloDescuento: false,
-  orden: 'nombre-asc',
+  orden: { campo: 'nombre', direccion: 'asc' },
 }
 
 type EstadoCarga = 'cargando' | 'listo' | 'error'
@@ -87,6 +89,58 @@ function contarPor(
     .sort((a, b) => b.conteo - a.conteo || a.valor.localeCompare(b.valor, 'es'))
 }
 
+/**
+ * Aplica los filtros indicados. `omitirCategorias` sirve para calcular los
+ * conteos de los chips: si se contaran sobre el resultado final, seleccionar
+ * una categoría dejaría todas las demás en cero y el usuario no podría saber
+ * cuánto encontraría al cambiar de una a otra.
+ */
+function aplicarFiltros(
+  productos: Producto[],
+  filtros: FiltrosCatalogo,
+  omitirCategorias = false,
+): Producto[] {
+  const termino = normalizar(filtros.busqueda)
+
+  return productos.filter((producto) => {
+    if (filtros.soloActivos && !producto.activo) return false
+    if (filtros.soloDescuento && !(producto.descuento > 0)) return false
+
+    if (
+      !omitirCategorias &&
+      filtros.categorias.length > 0 &&
+      !filtros.categorias.includes(producto.categoria)
+    ) {
+      return false
+    }
+
+    if (filtros.inventario !== 'todos') {
+      const estado = clasificarInventario(producto)
+      const coincide =
+        filtros.inventario === 'atencion'
+          ? requiereAtencion(estado)
+          : estado === filtros.inventario
+      if (!coincide) return false
+    }
+
+    if (termino === '') return true
+
+    // La búsqueda recorre varios campos opcionales; `??` evita el
+    // `TypeError: Cannot read properties of null` al normalizar.
+    const indice = normalizar(
+      [
+        producto.nombre,
+        producto.id,
+        producto.categoria,
+        producto.marca ?? '',
+        producto.proveedor ?? '',
+        producto.almacen ?? '',
+      ].join(' '),
+    )
+    return indice.includes(termino)
+  })
+}
+
 export function useCatalogo() {
   const [productos, setProductos] = useState<Producto[]>([])
   const [meta, setMeta] = useState<MetaCatalogo | null>(null)
@@ -130,51 +184,19 @@ export function useCatalogo() {
     }
   }, [cargar])
 
-  /** Opciones de filtro derivadas de los datos, no declaradas en el código. */
+  /**
+   * Conteos de los chips de categoría, calculados sobre el resto de filtros
+   * aplicados. Reflejan lo que se encontraría al pulsar cada uno.
+   */
   const categorias = useMemo(
-    () => contarPor(productos, (p) => p.categoria, 'Sin categoría'),
-    [productos],
+    () => contarPor(aplicarFiltros(productos, filtros, true), (p) => p.categoria, 'Sin categoría'),
+    [productos, filtros],
   )
 
-  const resultados = useMemo(() => {
-    const termino = normalizar(filtros.busqueda)
-
-    const filtrados = productos.filter((producto) => {
-      if (filtros.soloActivos && !producto.activo) return false
-      if (filtros.soloDescuento && !(producto.descuento > 0)) return false
-
-      if (filtros.categorias.length > 0 && !filtros.categorias.includes(producto.categoria)) {
-        return false
-      }
-
-      if (filtros.inventario !== 'todos') {
-        const estado = clasificarInventario(producto)
-        const coincide =
-          filtros.inventario === 'atencion'
-            ? requiereAtencion(estado)
-            : estado === filtros.inventario
-        if (!coincide) return false
-      }
-
-      if (termino === '') return true
-
-      // La búsqueda recorre varios campos opcionales; `??` evita el
-      // `TypeError: Cannot read properties of null` al normalizar.
-      const indice = normalizar(
-        [
-          producto.nombre,
-          producto.id,
-          producto.categoria,
-          producto.marca ?? '',
-          producto.proveedor ?? '',
-          producto.almacen ?? '',
-        ].join(' '),
-      )
-      return indice.includes(termino)
-    })
-
-    return ordenar(filtrados, filtros.orden)
-  }, [productos, filtros])
+  const resultados = useMemo(
+    () => ordenar(aplicarFiltros(productos, filtros), filtros.orden),
+    [productos, filtros],
+  )
 
   // Cambiar de filtro devuelve a la primera página: mantener la página 7
   // sobre un resultado de 12 elementos dejaría la lista vacía sin motivo.
@@ -185,7 +207,7 @@ export function useCatalogo() {
   const totalPaginas = Math.max(1, Math.ceil(resultados.length / POR_PAGINA))
   const paginaSegura = Math.min(pagina, totalPaginas)
 
-  const pagina_actual = useMemo(() => {
+  const productosPagina = useMemo(() => {
     const inicio = (paginaSegura - 1) * POR_PAGINA
     return resultados.slice(inicio, inicio + POR_PAGINA)
   }, [resultados, paginaSegura])
@@ -242,6 +264,21 @@ export function useCatalogo() {
 
   const limpiarFiltros = useCallback(() => {
     setFiltros(FILTROS_INICIALES)
+  }, [])
+
+  /**
+   * Alterna el orden por una columna. La primera pulsación ordena ascendente;
+   * la siguiente invierte. Cambiar de columna vuelve a empezar ascendente,
+   * que es lo que espera quien acaba de pulsar otro encabezado.
+   */
+  const ordenarPor = useCallback((campo: CampoOrden) => {
+    setFiltros((previos) => ({
+      ...previos,
+      orden:
+        previos.orden.campo === campo
+          ? { campo, direccion: previos.orden.direccion === 'asc' ? 'desc' : 'asc' }
+          : { campo, direccion: 'asc' },
+    }))
   }, [])
 
   /**
@@ -302,7 +339,7 @@ export function useCatalogo() {
     productos,
     categorias,
     resultados,
-    productosPagina: pagina_actual,
+    productosPagina,
     pagina: paginaSegura,
     totalPaginas,
     rango,
@@ -317,36 +354,42 @@ export function useCatalogo() {
     actualizarFiltros,
     alternarCategoria,
     limpiarFiltros,
+    ordenarPor,
     reintentar: () => void cargar(),
   }
 }
 
-function ordenar(productos: Producto[], orden: FiltrosCatalogo['orden']): Producto[] {
-  const copia = [...productos]
+function ordenar(productos: Producto[], orden: OrdenCatalogo): Producto[] {
+  const signo = orden.direccion === 'asc' ? 1 : -1
 
-  // Los nulos siempre se van al final, sin importar la dirección del orden.
-  const porNumero = (valor: number | null | undefined, ascendente: boolean) => {
-    if (typeof valor !== 'number' || !Number.isFinite(valor)) {
-      return ascendente ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY
+  // Los valores ausentes se van siempre al final, sin importar la dirección:
+  // un hueco no es «el más barato» ni «el que menos stock tiene».
+  const comparar = (a: Producto, b: Producto): number => {
+    switch (orden.campo) {
+      case 'id':
+        return a.id.localeCompare(b.id, 'es') * signo
+      case 'categoria':
+        return (
+          a.categoria.localeCompare(b.categoria, 'es') * signo ||
+          a.nombre.localeCompare(b.nombre, 'es')
+        )
+      case 'stock':
+      case 'plazoEntregaHoras':
+      case 'precioUnitario': {
+        const valorA = a[orden.campo]
+        const valorB = b[orden.campo]
+        const faltaA = typeof valorA !== 'number' || !Number.isFinite(valorA)
+        const faltaB = typeof valorB !== 'number' || !Number.isFinite(valorB)
+        if (faltaA && faltaB) return 0
+        if (faltaA) return 1
+        if (faltaB) return -1
+        return (valorA - valorB) * signo
+      }
+      case 'nombre':
+      default:
+        return a.nombre.localeCompare(b.nombre, 'es') * signo
     }
-    return valor
   }
 
-  switch (orden) {
-    case 'precio-asc':
-      return copia.sort(
-        (a, b) => porNumero(a.precioUnitario, true) - porNumero(b.precioUnitario, true),
-      )
-    case 'precio-desc':
-      return copia.sort(
-        (a, b) => porNumero(b.precioUnitario, false) - porNumero(a.precioUnitario, false),
-      )
-    case 'stock-desc':
-      return copia.sort((a, b) => porNumero(b.stock, false) - porNumero(a.stock, false))
-    case 'reciente':
-      return copia.sort((a, b) => (b.fechaAlta ?? '').localeCompare(a.fechaAlta ?? ''))
-    case 'nombre-asc':
-    default:
-      return copia.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'))
-  }
+  return [...productos].sort(comparar)
 }
