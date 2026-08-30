@@ -27,17 +27,17 @@ export function GraficaCategorias({ datos }: Props) {
   return (
     <section
       aria-label="Inventario por categoría"
-      className="rounded-[10px] border border-borde bg-superficie p-4"
+      className="rounded border border-borde bg-superficie p-md"
     >
-      <header className="mb-3 flex items-baseline justify-between gap-3">
-        <h2 className="text-[13px] font-semibold text-texto">Unidades por categoría</h2>
-        <p className="text-[11.5px] text-texto-tenue">
+      <header className="mb-sm flex flex-wrap items-baseline justify-between gap-sm">
+        <h2 className="t-card-title text-texto">Unidades por categoría</h2>
+        <p className="t-metadata text-texto-tenue">
           Calculado sobre los productos visibles. Los registros sin stock no suman.
         </p>
       </header>
 
       {datos.length === 0 ? (
-        <p className="py-10 text-center text-[13px] text-texto-medio">
+        <p className="t-body py-10 text-center text-texto-medio">
           No hay datos que graficar con los filtros actuales.
         </p>
       ) : (

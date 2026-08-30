@@ -8,9 +8,11 @@
  * Todas las opciones de filtro se derivan del archivo. No hay listas de
  * categorías, marcas ni rangos escritas a mano en ningún lugar del proyecto.
  */
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type {
   ArchivoCatalogo,
+  Densidad,
+  FiltroActivo,
   FiltrosCatalogo,
   MetaCatalogo,
   OpcionFiltro,
@@ -18,12 +20,16 @@ import type {
 } from '../tipos'
 import {
   clasificarInventario,
+  ETIQUETAS_INVENTARIO,
   normalizar,
   promedioSeguro,
   sumaSegura,
 } from '../utilidades'
 
 const RUTA_DATOS = `${import.meta.env.BASE_URL}datos/productos.json`
+
+/** Tamaño de página fijo. Paginación explícita: nada de scroll infinito. */
+export const POR_PAGINA = 24
 
 export const FILTROS_INICIALES: FiltrosCatalogo = {
   busqueda: '',
@@ -87,38 +93,41 @@ export function useCatalogo() {
   const [mensajeError, setMensajeError] = useState<string | null>(null)
   const [filtros, setFiltros] = useState<FiltrosCatalogo>(FILTROS_INICIALES)
   const [descartados, setDescartados] = useState(0)
+  const [densidad, setDensidad] = useState<Densidad>('comoda')
+  const [pagina, setPagina] = useState(1)
 
-  useEffect(() => {
-    let cancelado = false
-
-    async function cargar() {
-      try {
-        const respuesta = await fetch(RUTA_DATOS)
-        if (!respuesta.ok) {
-          throw new Error(`El servidor respondió ${respuesta.status} al pedir el catálogo.`)
-        }
-        const crudo: unknown = await respuesta.json()
-        if (!esArchivoValido(crudo)) {
-          throw new Error('El archivo de datos no contiene un arreglo "productos".')
-        }
-        const utilizables = crudo.productos.filter(esProductoUtilizable)
-        if (cancelado) return
-        setProductos(utilizables)
-        setDescartados(crudo.productos.length - utilizables.length)
-        setMeta(crudo.meta ?? null)
-        setEstado('listo')
-      } catch (error) {
-        if (cancelado) return
-        setMensajeError(error instanceof Error ? error.message : 'Error desconocido al cargar.')
-        setEstado('error')
+  const cargar = useCallback(async (senal?: AbortSignal) => {
+    setEstado('cargando')
+    setMensajeError(null)
+    try {
+      const respuesta = await fetch(RUTA_DATOS, { signal: senal })
+      if (!respuesta.ok) {
+        throw new Error(`El servidor respondió ${respuesta.status} al pedir el catálogo.`)
       }
-    }
-
-    void cargar()
-    return () => {
-      cancelado = true
+      const crudo: unknown = await respuesta.json()
+      if (!esArchivoValido(crudo)) {
+        throw new Error('El archivo de datos no contiene un arreglo "productos".')
+      }
+      const utilizables = crudo.productos.filter(esProductoUtilizable)
+      if (senal?.aborted === true) return
+      setProductos(utilizables)
+      setDescartados(crudo.productos.length - utilizables.length)
+      setMeta(crudo.meta ?? null)
+      setEstado('listo')
+    } catch (error) {
+      if (senal?.aborted === true) return
+      setMensajeError(error instanceof Error ? error.message : 'Error desconocido al cargar.')
+      setEstado('error')
     }
   }, [])
+
+  useEffect(() => {
+    const controlador = new AbortController()
+    void cargar(controlador.signal)
+    return () => {
+      controlador.abort()
+    }
+  }, [cargar])
 
   /** Opciones de filtro derivadas de los datos, no declaradas en el código. */
   const categorias = useMemo(
@@ -161,6 +170,26 @@ export function useCatalogo() {
     return ordenar(filtrados, filtros.orden)
   }, [productos, filtros])
 
+  // Cambiar de filtro devuelve a la primera página: mantener la página 7
+  // sobre un resultado de 12 elementos dejaría la lista vacía sin motivo.
+  useEffect(() => {
+    setPagina(1)
+  }, [filtros])
+
+  const totalPaginas = Math.max(1, Math.ceil(resultados.length / POR_PAGINA))
+  const paginaSegura = Math.min(pagina, totalPaginas)
+
+  const pagina_actual = useMemo(() => {
+    const inicio = (paginaSegura - 1) * POR_PAGINA
+    return resultados.slice(inicio, inicio + POR_PAGINA)
+  }, [resultados, paginaSegura])
+
+  const rango = useMemo(() => {
+    if (resultados.length === 0) return { desde: 0, hasta: 0 }
+    const desde = (paginaSegura - 1) * POR_PAGINA + 1
+    return { desde, hasta: Math.min(desde + POR_PAGINA - 1, resultados.length) }
+  }, [resultados.length, paginaSegura])
+
   /** Métricas del conjunto filtrado. Los nulos se excluyen, no se cuentan como cero. */
   const metricas = useMemo(() => {
     const conteoPorEstado = { disponible: 0, bajo: 0, agotado: 0, 'sin-dato': 0 }
@@ -192,29 +221,72 @@ export function useCatalogo() {
       .sort((a, b) => b.unidades - a.unidades)
   }, [resultados])
 
-  const hayFiltrosActivos =
-    filtros.busqueda !== '' ||
-    filtros.categorias.length > 0 ||
-    filtros.inventario !== 'todos' ||
-    filtros.soloActivos ||
-    filtros.soloDescuento
-
-  function actualizarFiltros(cambios: Partial<FiltrosCatalogo>) {
+  const actualizarFiltros = useCallback((cambios: Partial<FiltrosCatalogo>) => {
     setFiltros((previos) => ({ ...previos, ...cambios }))
-  }
+  }, [])
 
-  function alternarCategoria(categoria: string) {
+  const alternarCategoria = useCallback((categoria: string) => {
     setFiltros((previos) => ({
       ...previos,
       categorias: previos.categorias.includes(categoria)
         ? previos.categorias.filter((valor) => valor !== categoria)
         : [...previos.categorias, categoria],
     }))
-  }
+  }, [])
 
-  function limpiarFiltros() {
+  const limpiarFiltros = useCallback(() => {
     setFiltros(FILTROS_INICIALES)
-  }
+  }, [])
+
+  /**
+   * Fila de etiquetas removibles. Se deriva del estado de filtros, así que
+   * es imposible que muestre un filtro que ya no está aplicado.
+   */
+  const filtrosActivos = useMemo<FiltroActivo[]>(() => {
+    const activos: FiltroActivo[] = []
+
+    if (filtros.busqueda.trim() !== '') {
+      activos.push({
+        clave: 'busqueda',
+        etiqueta: `«${filtros.busqueda.trim()}»`,
+        quitar: () => actualizarFiltros({ busqueda: '' }),
+      })
+    }
+
+    for (const categoria of filtros.categorias) {
+      activos.push({
+        clave: `categoria:${categoria}`,
+        etiqueta: categoria,
+        quitar: () => alternarCategoria(categoria),
+      })
+    }
+
+    if (filtros.inventario !== 'todos') {
+      activos.push({
+        clave: 'inventario',
+        etiqueta: ETIQUETAS_INVENTARIO[filtros.inventario],
+        quitar: () => actualizarFiltros({ inventario: 'todos' }),
+      })
+    }
+
+    if (filtros.soloActivos) {
+      activos.push({
+        clave: 'activos',
+        etiqueta: 'Solo activos',
+        quitar: () => actualizarFiltros({ soloActivos: false }),
+      })
+    }
+
+    if (filtros.soloDescuento) {
+      activos.push({
+        clave: 'descuento',
+        etiqueta: 'Solo con descuento',
+        quitar: () => actualizarFiltros({ soloDescuento: false }),
+      })
+    }
+
+    return activos
+  }, [filtros, actualizarFiltros, alternarCategoria])
 
   return {
     estado,
@@ -224,13 +296,22 @@ export function useCatalogo() {
     productos,
     categorias,
     resultados,
+    productosPagina: pagina_actual,
+    pagina: paginaSegura,
+    totalPaginas,
+    rango,
+    irAPagina: setPagina,
+    densidad,
+    setDensidad,
     metricas,
     serieCategorias,
     filtros,
-    hayFiltrosActivos,
+    filtrosActivos,
+    hayFiltrosActivos: filtrosActivos.length > 0,
     actualizarFiltros,
     alternarCategoria,
     limpiarFiltros,
+    reintentar: () => void cargar(),
   }
 }
 

@@ -76,13 +76,13 @@ Papel cálido en lugar de blanco clínico. La estructura la definen líneas de 1
 no sombras. La jerarquía la marcan el peso tipográfico y el espacio, no el color.
 Prohibidos: degradados, glassmorphism, ilustraciones, emojis.
 
-- **Superficie:** fondo `--fondo`, tarjetas `--superficie` con borde `--borde` de 1 px. Sombra solo bajo la barra de filtros cuando queda fija.
-- **Acento:** un único `--acento` (verde de bodega), usado con avaricia: chips activos, botón primario y barras de la gráfica. Nada más.
+- **Superficie:** fondo `--fondo`, contenedores `--superficie` con borde `--borde` de 1 px. La profundidad se comunica por capas tonales y líneas finas, **nunca por sombras**.
+- **Acento:** un único `--acento` (verde de bodega), usado con avaricia: chips activos, botón primario, página actual y barras de la gráfica. Nada más.
 - **Semáforo de inventario:** `--ok` = stock sano, `--alerta` = bajo el mínimo, `--critico` (terracota apagado) = agotado, `--neutro` = sin dato. El color **nunca** comunica solo: siempre punto de color más texto.
-- **Tipografía:** IBM Plex Sans para la interfaz, IBM Plex Mono para SKUs y cifras monetarias. Escala: 22/600 cifra de indicador, 19/600 título de página, 15/600 título de tarjeta, 13/400 base, 12/500 metadatos, 11/500 mayúsculas con `tracking` 0.04em en etiquetas de indicador. Cifras tabulares (clase `cifras`) en todo lo que sea número.
-- **Forma:** rejilla base de 4 px. Radio 10px en tarjetas, campos y botones; 999px solo en chips. Bordes de 1 px.
-- **Densidad:** rejilla de tarjetas con `minmax(260px, 1fr)`. Sin alturas fijas.
-- **Modo oscuro:** carbón cálido, nunca azulado ni negro puro. Los tokens se redefinen bajo `prefers-color-scheme: dark`. Ningún color se declara solo dentro del bloque oscuro.
+- **Tipografía:** una clase por rol, definidas en `index.css`. No inventes tamaños sueltos: usa `.t-page-title` (19/600), `.t-indicator` (22/600), `.t-card-title` (15/600), `.t-body` (13/400), `.t-metadata` (12/500), `.t-label-caps` (11/500 mayúsculas) y `.t-mono` (13/450, IBM Plex Mono para SKUs y cifras). Añade `cifras` a todo lo numérico.
+- **Forma:** rejilla base de 4 px, con utilidades `xs`/`sm`/`md`/`lg`/`xl` (4/8/16/24/32). Radio: `rounded-sm` 2px en distintivos, `rounded` 4px en contenedores y controles, `rounded-md` 6px en filas de producto, `rounded-full` solo en chips.
+- **Lista de resultados:** filas horizontales a ancho completo, no rejilla de tarjetas. Cada fila: distintivo de 48 px, SKU y precio en la línea superior, nombre, y pie con categoría, estado de inventario y metadatos.
+- **Modo oscuro:** carbón cálido, nunca azulado ni negro puro. Tres estados: claro por omisión, oscuro por `prefers-color-scheme`, y ambos forzables con `data-tema` en `<html>`. Ningún color se declara solo dentro del bloque oscuro.
 
 ### Reglas de experiencia de usuario, no negociables
 
@@ -93,7 +93,10 @@ Prohibidos: degradados, glassmorphism, ilustraciones, emojis.
 - **Foco visible:** contorno de 2 px en `--acento` con 2 px de separación.
 - Sin modales para el flujo principal; el detalle va en panel lateral.
 - Sin texto centrado en bloques largos, sin mayúsculas sostenidas fuera de las etiquetas de indicador.
-- **Sin imágenes de producto.** El archivo de datos no las tiene y no se inventan marcadores de posición.
+- **Paginación de 24 por página**, con el rango visible en el pie («Mostrando 1–24 de 240»).
+- **Sin imágenes de producto.** El archivo de datos no las tiene. El recuadro de 48 px que abre cada fila lleva el distintivo de la categoría, que es un dato real del registro, no un marcador de posición.
+- **Sin campos inventados.** Si un dato no está en `productos.json`, no se muestra. No importa que el diseño de referencia lo proponga.
+- **Sin acciones que no hacen nada.** Ningún botón decorativo: si no está implementado, no se dibuja.
 
 ## 4. Componentes
 

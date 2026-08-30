@@ -246,3 +246,17 @@ romperse. Cada uno se comprobó contra `public/datos/productos.json`.
 > los registros sin fecha habrían mostrado *31 dic 1969* como si fuera un dato
 > real. Es el tipo de fallo silencioso que el archivo origen provoca y que la
 > interfaz tiene que interceptar.
+> 
+> ---
+> 
+> ## Auditoría de Stock (30 ago 2026)
+> 
+> **Veredicto del subagente:** `APTO — el dataset puede alimentar la interfaz respetando los 5 requisitos listados.`
+> 
+> **Requisitos pendientes:**
+> 1.  **Stock nulo:** Cambiar "Sin dato" por "Consultar disponibilidad" en `src/utilidades.ts`.
+> 2.  **Stock agotado:** Mostrar badge "Sin stock" en `src/componentes/TarjetaProducto.tsx`.
+> 3.  **Ubicación nula:** Cambiar "Sin asignar" por "Almacén Central" en `src/componentes/TarjetaProducto.tsx` y asegurar agrupación en filtros.
+> 4.  **Inactivos con stock:** Atenuar el stock específicamente cuando el producto está inactivo en `src/componentes/TarjetaProducto.tsx`.
+> 5.  **Marca nula:** Cambiar "Sin marca" por "Genérico" en `src/componentes/TarjetaProducto.tsx` y filtros.
+> 6.  **Precios nulos:** Cambiar "Sin precio" por "Precio no disponible" en `src/utilidades.ts`.

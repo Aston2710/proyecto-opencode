@@ -1,8 +1,17 @@
+import { useState } from 'react'
+import { AvisoError } from './componentes/AvisoError'
 import { BarraFiltros } from './componentes/BarraFiltros'
+import { BarraSuperior } from './componentes/BarraSuperior'
+import { EsqueletoCatalogo } from './componentes/EsqueletoCatalogo'
+import { FiltrosActivos } from './componentes/FiltrosActivos'
 import { GraficaCategorias } from './componentes/GraficaCategorias'
+import { ListaProductos } from './componentes/ListaProductos'
+import { Paginacion } from './componentes/Paginacion'
+import { PanelDetalle } from './componentes/PanelDetalle'
 import { PanelMetricas } from './componentes/PanelMetricas'
-import { RejillaProductos } from './componentes/RejillaProductos'
 import { useCatalogo } from './hooks/useCatalogo'
+import { useTema } from './hooks/useTema'
+import type { Densidad, Producto } from './tipos'
 import { formatearEntero } from './utilidades'
 
 export default function App() {
@@ -13,68 +22,41 @@ export default function App() {
     descartados,
     categorias,
     resultados,
+    productosPagina,
+    pagina,
+    totalPaginas,
+    rango,
+    irAPagina,
+    densidad,
+    setDensidad,
     metricas,
     serieCategorias,
     filtros,
-    hayFiltrosActivos,
+    filtrosActivos,
     actualizarFiltros,
     alternarCategoria,
     limpiarFiltros,
+    reintentar,
   } = useCatalogo()
+
+  const { esOscuro, alternar } = useTema()
+  const [seleccionado, setSeleccionado] = useState<Producto | null>(null)
 
   return (
     <div className="min-h-screen bg-fondo">
-      <header className="border-b border-borde bg-superficie">
-        <div className="mx-auto flex max-w-[1240px] flex-wrap items-end justify-between gap-4 px-5 py-5">
-          <div>
-            <h1 className="text-[19px] font-semibold tracking-tight text-texto">
-              Catálogo Mayorista
-            </h1>
-            <p className="mt-1 text-[12.5px] text-texto-medio">
-              Panel de inventario generado a partir de un archivo de datos externo.
-            </p>
-          </div>
-          {meta !== null ? (
-            <dl className="cifras flex flex-wrap gap-x-5 gap-y-1 text-[11.5px] text-texto-tenue">
-              <div>
-                <dt className="inline">Origen: </dt>
-                <dd className="inline text-texto-medio">{meta.fuente}</dd>
-              </div>
-              <div>
-                <dt className="inline">Registros: </dt>
-                <dd className="inline text-texto-medio">{formatearEntero(meta.totalRegistros)}</dd>
-              </div>
-              <div>
-                <dt className="inline">Versión: </dt>
-                <dd className="inline text-texto-medio">v{meta.version}</dd>
-              </div>
-            </dl>
-          ) : null}
-        </div>
-      </header>
+      <BarraSuperior meta={meta} esOscuro={esOscuro} onAlternarTema={alternar} />
 
-      <main className="mx-auto flex max-w-[1240px] flex-col gap-4 px-5 py-6">
-        {estado === 'cargando' ? <Aviso texto="Cargando catálogo…" /> : null}
+      <main className="mx-auto flex max-w-[1240px] flex-col gap-md p-md">
+        {estado === 'cargando' ? <EsqueletoCatalogo /> : null}
 
         {estado === 'error' ? (
-          <div
-            role="alert"
-            className="rounded-[10px] border border-critico bg-critico-suave px-4 py-3.5"
-          >
-            <p className="text-[13px] font-semibold text-critico">
-              No se pudo cargar el archivo de datos
-            </p>
-            <p className="mt-1 text-[12.5px] text-texto-medio">
-              {mensajeError ?? 'Causa desconocida.'} La interfaz permanece estable y no se
-              renderizó ningún dato parcial.
-            </p>
-          </div>
+          <AvisoError mensaje={mensajeError} onReintentar={reintentar} />
         ) : null}
 
         {estado === 'listo' ? (
           <>
             {descartados > 0 ? (
-              <p className="rounded-[10px] border border-alerta bg-alerta-suave px-4 py-2.5 text-[12.5px] text-alerta">
+              <p className="t-metadata rounded border border-alerta bg-alerta-suave px-md py-2.5 text-alerta">
                 Se descartaron {formatearEntero(descartados)} registros del archivo por carecer de
                 id, nombre o categoría.
               </p>
@@ -85,39 +67,86 @@ export default function App() {
             <BarraFiltros
               filtros={filtros}
               categorias={categorias}
-              hayFiltrosActivos={hayFiltrosActivos}
               onCambiar={actualizarFiltros}
               onAlternarCategoria={alternarCategoria}
-              onLimpiar={limpiarFiltros}
             />
+
+            <FiltrosActivos filtros={filtrosActivos} onLimpiar={limpiarFiltros} />
 
             <GraficaCategorias datos={serieCategorias} />
 
-            <p aria-live="polite" className="cifras text-[12.5px] text-texto-medio">
-              {formatearEntero(resultados.length)} producto
-              {resultados.length === 1 ? '' : 's'} en pantalla
-            </p>
+            <div className="flex flex-wrap items-center justify-between gap-md">
+              <p aria-live="polite" className="t-body cifras text-texto-medio">
+                {formatearEntero(resultados.length)} producto
+                {resultados.length === 1 ? '' : 's'} en pantalla
+              </p>
+              <SelectorDensidad densidad={densidad} onCambiar={setDensidad} />
+            </div>
 
-            <RejillaProductos productos={resultados} onLimpiar={limpiarFiltros} />
+            <ListaProductos
+              productos={productosPagina}
+              densidad={densidad}
+              onLimpiar={limpiarFiltros}
+              onAbrir={setSeleccionado}
+            />
+
+            <Paginacion
+              pagina={pagina}
+              totalPaginas={totalPaginas}
+              rango={rango}
+              total={resultados.length}
+              onIr={irAPagina}
+            />
           </>
         ) : null}
       </main>
 
-      <footer className="border-t border-borde px-5 py-6">
-        <p className="mx-auto max-w-[1240px] text-[11.5px] text-texto-tenue">
+      <footer className="border-t border-borde px-md py-lg">
+        <p className="t-metadata mx-auto max-w-[1240px] text-texto-tenue">
           Proyecto final del Curso de Desarrollo con Inteligencia Artificial. Interfaz generada
           íntegramente mediante agentes; los datos provienen de{' '}
           <code className="font-mono">public/datos/productos.json</code>.
         </p>
       </footer>
+
+      <PanelDetalle producto={seleccionado} onCerrar={() => setSeleccionado(null)} />
     </div>
   )
 }
 
-function Aviso({ texto }: { texto: string }) {
+function SelectorDensidad({
+  densidad,
+  onCambiar,
+}: {
+  densidad: Densidad
+  onCambiar: (valor: Densidad) => void
+}) {
+  const opciones: Array<{ valor: Densidad; etiqueta: string }> = [
+    { valor: 'comoda', etiqueta: 'Cómoda' },
+    { valor: 'compacta', etiqueta: 'Compacta' },
+  ]
+
   return (
-    <p className="rounded-[10px] border border-borde bg-superficie px-4 py-8 text-center text-[13px] text-texto-medio">
-      {texto}
-    </p>
+    <div
+      role="group"
+      aria-label="Densidad de la lista"
+      className="flex items-center gap-1 rounded border border-borde bg-superficie p-0.5"
+    >
+      {opciones.map((opcion) => (
+        <button
+          key={opcion.valor}
+          type="button"
+          aria-pressed={densidad === opcion.valor}
+          onClick={() => onCambiar(opcion.valor)}
+          className={`t-metadata h-7 rounded-sm px-2.5 transition-colors ${
+            densidad === opcion.valor
+              ? 'bg-superficie-alta text-texto'
+              : 'text-texto-tenue hover:text-texto-medio'
+          }`}
+        >
+          {opcion.etiqueta}
+        </button>
+      ))}
+    </div>
   )
 }

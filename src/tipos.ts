@@ -44,6 +44,9 @@ export interface OpcionFiltro {
   conteo: number
 }
 
+/** Densidad de la lista de resultados. */
+export type Densidad = 'comoda' | 'compacta'
+
 export interface FiltrosCatalogo {
   busqueda: string
   categorias: string[]
@@ -59,3 +62,13 @@ export type OrdenCatalogo =
   | 'precio-desc'
   | 'stock-desc'
   | 'reciente'
+
+/** Una etiqueta removible de la fila de filtros activos. */
+export interface FiltroActivo {
+  clave: string
+  etiqueta: string
+  quitar: () => void
+}
+
+/** Preferencia de tema. `sistema` delega en `prefers-color-scheme`. */
+export type Tema = 'sistema' | 'claro' | 'oscuro'

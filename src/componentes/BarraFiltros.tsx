@@ -4,10 +4,8 @@ import { ETIQUETAS_INVENTARIO, formatearEntero } from '../utilidades'
 interface Props {
   filtros: FiltrosCatalogo
   categorias: OpcionFiltro[]
-  hayFiltrosActivos: boolean
   onCambiar: (cambios: Partial<FiltrosCatalogo>) => void
   onAlternarCategoria: (categoria: string) => void
-  onLimpiar: () => void
 }
 
 const ESTADOS_INVENTARIO: Array<EstadoInventario | 'todos'> = [
@@ -26,43 +24,49 @@ const ORDENES: Array<{ valor: OrdenCatalogo; etiqueta: string }> = [
   { valor: 'reciente', etiqueta: 'Alta más reciente' },
 ]
 
+const CLASE_CONTROL =
+  'rounded border border-borde bg-superficie-sutil px-2.5 h-9 text-texto t-body'
+
 /**
  * Controles de filtrado. Las categorías llegan derivadas del archivo de datos;
  * este componente no conoce ni una sola categoría de antemano.
  */
-export function BarraFiltros({
-  filtros,
-  categorias,
-  hayFiltrosActivos,
-  onCambiar,
-  onAlternarCategoria,
-  onLimpiar,
-}: Props) {
+export function BarraFiltros({ filtros, categorias, onCambiar, onAlternarCategoria }: Props) {
   return (
     <section
       aria-label="Filtros del catálogo"
-      className="flex flex-col gap-3.5 rounded-[10px] border border-borde bg-superficie p-4"
+      className="flex flex-col gap-sm rounded border border-borde bg-superficie p-md"
     >
-      <div className="flex flex-wrap items-center gap-2.5">
+      <div className="flex flex-wrap items-center gap-sm">
         <label className="relative min-w-[240px] flex-1">
           <span className="sr-only">Buscar productos</span>
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-texto-tenue"
+            fill="none"
+            stroke="currentColor"
+          >
+            <circle cx="11" cy="11" r="6.4" strokeWidth="1.8" />
+            <path d="m16 16 4 4" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
           <input
             type="search"
             value={filtros.busqueda}
             onChange={(evento) => onCambiar({ busqueda: evento.target.value })}
             placeholder="Buscar por nombre, SKU, marca, proveedor o almacén"
-            className="w-full rounded-[10px] border border-borde bg-superficie-sutil px-3 py-2 text-[13px] text-texto placeholder:text-texto-tenue"
+            className={`${CLASE_CONTROL} w-full pl-8 placeholder:text-texto-tenue`}
           />
         </label>
 
-        <label className="flex items-center gap-2 text-[12.5px] text-texto-medio">
+        <label className="t-metadata flex items-center gap-2 text-texto-medio">
           <span>Inventario</span>
           <select
             value={filtros.inventario}
             onChange={(evento) =>
               onCambiar({ inventario: evento.target.value as FiltrosCatalogo['inventario'] })
             }
-            className="rounded-[10px] border border-borde bg-superficie-sutil px-2.5 py-2 text-[13px] text-texto"
+            className={CLASE_CONTROL}
           >
             {ESTADOS_INVENTARIO.map((estado) => (
               <option key={estado} value={estado}>
@@ -72,12 +76,12 @@ export function BarraFiltros({
           </select>
         </label>
 
-        <label className="flex items-center gap-2 text-[12.5px] text-texto-medio">
+        <label className="t-metadata flex items-center gap-2 text-texto-medio">
           <span>Orden</span>
           <select
             value={filtros.orden}
             onChange={(evento) => onCambiar({ orden: evento.target.value as OrdenCatalogo })}
-            className="rounded-[10px] border border-borde bg-superficie-sutil px-2.5 py-2 text-[13px] text-texto"
+            className={CLASE_CONTROL}
           >
             {ORDENES.map((opcion) => (
               <option key={opcion.valor} value={opcion.valor}>
@@ -88,7 +92,7 @@ export function BarraFiltros({
         </label>
       </div>
 
-      <div className="flex flex-wrap items-center gap-1.5">
+      <div className="sin-barra flex items-center gap-sm overflow-x-auto py-xs">
         {categorias.map((categoria) => {
           const activa = filtros.categorias.includes(categoria.valor)
           return (
@@ -97,10 +101,10 @@ export function BarraFiltros({
               type="button"
               aria-pressed={activa}
               onClick={() => onAlternarCategoria(categoria.valor)}
-              className={`rounded-full border px-2.5 py-1 text-[12px] font-medium transition-colors ${
+              className={`t-metadata rounded-full border px-3 py-1.5 whitespace-nowrap transition-colors ${
                 activa
                   ? 'border-acento bg-acento text-acento-texto'
-                  : 'border-borde bg-superficie-sutil text-texto-medio hover:border-borde-fuerte'
+                  : 'border-borde bg-superficie text-texto-medio hover:bg-superficie-alta'
               }`}
             >
               {categoria.valor}
@@ -110,7 +114,7 @@ export function BarraFiltros({
         })}
       </div>
 
-      <div className="flex flex-wrap items-center gap-4 border-t border-borde pt-3">
+      <div className="flex flex-wrap items-center gap-md border-t border-borde pt-sm">
         <Interruptor
           etiqueta="Solo activos"
           activo={filtros.soloActivos}
@@ -121,15 +125,6 @@ export function BarraFiltros({
           activo={filtros.soloDescuento}
           onCambiar={(valor) => onCambiar({ soloDescuento: valor })}
         />
-        {hayFiltrosActivos ? (
-          <button
-            type="button"
-            onClick={onLimpiar}
-            className="ml-auto text-[12.5px] font-medium text-acento underline underline-offset-2"
-          >
-            Limpiar filtros
-          </button>
-        ) : null}
       </div>
     </section>
   )
@@ -145,7 +140,7 @@ function Interruptor({
   onCambiar: (valor: boolean) => void
 }) {
   return (
-    <label className="flex cursor-pointer items-center gap-2 text-[12.5px] text-texto-medio">
+    <label className="t-metadata flex cursor-pointer items-center gap-2 text-texto-medio">
       <input
         type="checkbox"
         checked={activo}

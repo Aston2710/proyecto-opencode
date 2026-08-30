@@ -84,6 +84,24 @@ export const ESTILOS_INVENTARIO: Record<EstadoInventario, { punto: string; texto
   'sin-dato': { punto: 'bg-neutro', texto: 'text-texto-tenue' },
 }
 
+/**
+ * Distintivo de dos letras para el recuadro que abre cada fila.
+ *
+ * El sistema de diseño coloca ahí una miniatura de 48 px, pero el archivo de
+ * datos no tiene imágenes. En lugar de un marcador de posición vacío, el
+ * recuadro muestra las iniciales de la categoría: es un dato real del
+ * registro, no un relleno.
+ */
+export function distintivoCategoria(categoria: string): string {
+  const palabras = categoria
+    .trim()
+    .split(/\s+/)
+    .filter((palabra) => palabra.length > 0)
+  if (palabras.length === 0) return '··'
+  if (palabras.length === 1) return palabras[0].slice(0, 2).toUpperCase()
+  return (palabras[0][0] + palabras[1][0]).toUpperCase()
+}
+
 /** Normaliza texto para buscar sin acentos ni diferencias de mayúsculas. */
 export function normalizar(texto: string): string {
   return texto

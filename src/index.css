@@ -1,18 +1,21 @@
 @import 'tailwindcss';
 
 /* ---------------------------------------------------------------
-   Tokens de diseño del Catálogo Mayorista.
+   Tokens del sistema «Industrial Inventory Ledger», generado con
+   Google Stitch. Ver docs/diseno/industrial_inventory_ledger/DESIGN.md
+   y docs/PROMPT-STITCH.md.
 
-   Sistema "Industrial Inventory Ledger", generado con Google Stitch
-   (ver docs/PROMPT-STITCH.md). Definidos completos en :root y
-   redefinidos en modo oscuro. Ningún color se declara únicamente
-   dentro del bloque oscuro.
+   Tres estados de tema: claro por omisión, oscuro por preferencia del
+   sistema, y ambos forzables con el atributo data-tema en <html>.
+   Ningún color se declara únicamente dentro del bloque oscuro.
    --------------------------------------------------------------- */
+
 :root {
   /* Papel cálido, no blanco clínico. */
   --fondo: #f7f6f3;
   --superficie: #ffffff;
   --superficie-sutil: #faf9f6;
+  --superficie-alta: #eceeeb;
   --borde: #e3e1dc;
   --borde-fuerte: #d2cfc8;
   --texto: #1a1918;
@@ -31,15 +34,17 @@
   --critico-suave: #f4e8e5;
   --neutro: #757875;
   --neutro-suave: #edece8;
-  --sombra: 0 1px 2px rgb(26 25 24 / 0.05);
+  --velo: rgb(26 25 24 / 0.4);
+  --brillo: rgb(26 25 24 / 0.06);
 }
 
+/* Carbón cálido, nunca azulado ni negro puro. */
 @media (prefers-color-scheme: dark) {
-  :root {
-    /* Carbón cálido, nunca azulado ni negro puro. */
+  :root:not([data-tema='claro']) {
     --fondo: #131211;
     --superficie: #1c1b19;
     --superficie-sutil: #232220;
+    --superficie-alta: #2b2926;
     --borde: #302e2b;
     --borde-fuerte: #45433e;
     --texto: #f0efeb;
@@ -56,8 +61,34 @@
     --critico-suave: #2f1d1a;
     --neutro: #91908a;
     --neutro-suave: #272724;
-    --sombra: 0 1px 2px rgb(0 0 0 / 0.35);
+    --velo: rgb(0 0 0 / 0.55);
+    --brillo: rgb(255 255 255 / 0.05);
   }
+}
+
+:root[data-tema='oscuro'] {
+  --fondo: #131211;
+  --superficie: #1c1b19;
+  --superficie-sutil: #232220;
+  --superficie-alta: #2b2926;
+  --borde: #302e2b;
+  --borde-fuerte: #45433e;
+  --texto: #f0efeb;
+  --texto-medio: #b3b2aa;
+  --texto-tenue: #86857d;
+  --acento: #61b795;
+  --acento-suave: #1c332b;
+  --acento-texto: #0d1c16;
+  --ok: #62b783;
+  --ok-suave: #17301f;
+  --alerta: #d99b45;
+  --alerta-suave: #33260f;
+  --critico: #c98d84;
+  --critico-suave: #2f1d1a;
+  --neutro: #91908a;
+  --neutro-suave: #272724;
+  --velo: rgb(0 0 0 / 0.55);
+  --brillo: rgb(255 255 255 / 0.05);
 }
 
 @theme inline {
@@ -71,6 +102,7 @@
   --color-fondo: var(--fondo);
   --color-superficie: var(--superficie);
   --color-superficie-sutil: var(--superficie-sutil);
+  --color-superficie-alta: var(--superficie-alta);
   --color-borde: var(--borde);
   --color-borde-fuerte: var(--borde-fuerte);
   --color-texto: var(--texto);
@@ -87,6 +119,19 @@
   --color-critico-suave: var(--critico-suave);
   --color-neutro: var(--neutro);
   --color-neutro-suave: var(--neutro-suave);
+
+  /* Rejilla base de 4px, tal como la fija el sistema. */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  --radius-sm: 2px;
+  --radius-DEFAULT: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
 }
 
 * {
@@ -97,25 +142,79 @@ html {
   color-scheme: light dark;
 }
 
+:root[data-tema='claro'] {
+  color-scheme: light;
+}
+
+:root[data-tema='oscuro'] {
+  color-scheme: dark;
+}
+
 body {
   margin: 0;
   background: var(--fondo);
   color: var(--texto);
   font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, sans-serif;
-  font-size: 14px;
-  line-height: 1.45;
+  font-size: 13px;
+  line-height: 18px;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Códigos SKU y cualquier dato que se lea carácter a carácter. */
-code,
-kbd,
-samp,
-pre,
-.mono {
-  font-family: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', 'Cascadia Mono',
-    Consolas, 'Liberation Mono', monospace;
+/* ---------------------------------------------------------------
+   Escala tipográfica del sistema. Un nombre por rol, tal como los
+   define DESIGN.md: los componentes no eligen tamaños sueltos.
+   --------------------------------------------------------------- */
+
+.t-page-title {
+  font-size: 19px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.t-indicator {
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.t-card-title {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.t-body {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+}
+
+.t-metadata {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+}
+
+.t-label-caps {
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.t-mono {
+  font-family:
+    'IBM Plex Mono', ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Consolas,
+    'Liberation Mono', monospace;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 450;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Todas las cifras alineadas verticalmente entre filas. */
@@ -133,4 +232,45 @@ pre,
 ::selection {
   background: var(--acento-suave);
   color: var(--texto);
+}
+
+/* Fila de chips que se desplaza en pantallas estrechas sin barra visible.
+   No introduce un segundo eje de scroll vertical. */
+.sin-barra::-webkit-scrollbar {
+  display: none;
+}
+
+.sin-barra {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Esqueletos de carga: la estructura ya está en su sitio, así nada
+   se desplaza cuando entran los datos. */
+@keyframes brillo-esqueleto {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.esqueleto {
+  position: relative;
+  overflow: hidden;
+  background: var(--neutro-suave);
+  border-radius: 4px;
+}
+
+.esqueleto::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--brillo), transparent);
+  animation: brillo-esqueleto 1.4s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .esqueleto::after {
+    animation: none;
+  }
 }

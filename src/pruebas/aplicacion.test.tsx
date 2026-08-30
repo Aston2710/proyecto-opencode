@@ -33,6 +33,32 @@ function simularRespuesta(cuerpo: string, ok = true, status = 200) {
   )
 }
 
+/** Construye un archivo mínimo con los campos que se quieran forzar. */
+function archivoCon(productos: Array<Record<string, unknown>>) {
+  return JSON.stringify({
+    meta: { fuente: 'prueba', generadoPor: 'test', version: 1, totalRegistros: productos.length },
+    productos,
+  })
+}
+
+const productoBase = {
+  id: 'SKU-0001',
+  nombre: 'Producto de prueba',
+  categoria: 'Abarrotes',
+  marca: 'La Rivera',
+  proveedor: 'Distribuidora Centro',
+  almacen: 'Almacén Central',
+  precioUnitario: 120,
+  precioMayoreo: 98,
+  unidadesPorCaja: 12,
+  stock: 300,
+  stockMinimo: 50,
+  descuento: 0,
+  activo: true,
+  fechaAlta: '2024-03-15',
+  descripcion: 'Descripción de prueba.',
+}
+
 /** Monta la aplicación y espera a que el efecto de carga se resuelva. */
 async function montar() {
   contenedor = document.createElement('div')
@@ -93,14 +119,57 @@ describe('carga con el archivo de datos real', () => {
     expect(texto).not.toContain('1970')
   })
 
-  it('muestra las etiquetas de respaldo de los campos ausentes', async () => {
+  it('pagina los resultados en lugar de volcarlos todos', async () => {
     simularRespuesta(archivoReal)
     const texto = await montar()
 
+    expect(texto).toContain('Mostrando 1–24 de 240')
+    expect(contenedor.querySelectorAll('ul li').length).toBe(24)
+    expect(contenedor.querySelector('nav[aria-label="Paginación de resultados"]')).not.toBeNull()
+  })
+})
+
+describe('tolerancia a campos ausentes en la vista', () => {
+  it('muestra las etiquetas de respaldo de cada campo vacío', async () => {
+    simularRespuesta(
+      archivoCon([
+        {
+          ...productoBase,
+          marca: null,
+          proveedor: null,
+          precioUnitario: null,
+          precioMayoreo: null,
+          stock: null,
+          fechaAlta: null,
+          descripcion: null,
+          almacen: undefined,
+        },
+      ]),
+    )
+
+    const texto = await montar()
+
     expect(texto).toContain('Sin marca')
+    expect(texto).toContain('Sin proveedor')
+    expect(texto).toContain('Sin asignar')
     expect(texto).toContain('Sin precio')
     expect(texto).toContain('Sin dato')
-    expect(texto).toContain('Sin asignar')
+    expect(texto).not.toContain('NaN')
+    expect(texto).not.toContain('undefined')
+  })
+
+  it('distingue el stock ausente del agotado', async () => {
+    simularRespuesta(
+      archivoCon([
+        { ...productoBase, id: 'SKU-0001', nombre: 'Sin registro', stock: null },
+        { ...productoBase, id: 'SKU-0002', nombre: 'Sin existencias', stock: 0 },
+      ]),
+    )
+
+    const texto = await montar()
+
+    expect(texto).toContain('Sin dato')
+    expect(texto).toContain('Agotado')
   })
 })
 
@@ -112,6 +181,7 @@ describe('resistencia ante un archivo defectuoso', () => {
     expect(contenedor.querySelector('[role="alert"]')).not.toBeNull()
     expect(texto).toContain('No se pudo cargar el archivo de datos')
     expect(texto).toContain('500')
+    expect(texto).toContain('Reintentar')
   })
 
   it('avisa cuando el archivo no contiene el arreglo de productos', async () => {
@@ -123,28 +193,10 @@ describe('resistencia ante un archivo defectuoso', () => {
 
   it('descarta los registros sin id, nombre o categoría y lo informa', async () => {
     simularRespuesta(
-      JSON.stringify({
-        meta: { fuente: 'prueba', generadoPor: 'test', version: 1, totalRegistros: 2 },
-        productos: [
-          {
-            id: 'SKU-0001',
-            nombre: 'Producto válido',
-            categoria: 'Abarrotes',
-            marca: null,
-            proveedor: null,
-            precioUnitario: null,
-            precioMayoreo: null,
-            unidadesPorCaja: 1,
-            stock: null,
-            stockMinimo: 10,
-            descuento: 0,
-            activo: true,
-            fechaAlta: null,
-            descripcion: null,
-          },
-          { nombre: 'Registro roto sin id ni categoría' },
-        ],
-      }),
+      archivoCon([
+        { ...productoBase, nombre: 'Producto válido' },
+        { nombre: 'Registro roto sin id ni categoría' },
+      ]),
     )
 
     const texto = await montar()
