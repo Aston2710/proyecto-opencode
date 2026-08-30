@@ -29,7 +29,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-# Entregable generado. Se produce con los scripts del proyecto a partir de
-# docs/informe-word.txt, asi que no tiene sentido versionar el binario.
-INFORME.docx
