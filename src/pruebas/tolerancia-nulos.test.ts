@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Verifica la tabla de tolerancia a nulos de la skill `catalogo-mayorista`.
  * Cada prueba corresponde a una fila de esa tabla: si una falla, la interfaz
  * dejó de cumplir el contrato con el archivo origen.
@@ -7,9 +7,14 @@ import { describe, expect, it } from 'vitest'
 import type { Producto } from '../tipos'
 import {
   clasificarInventario,
+  formatearAntiguedad,
+  formatearEan,
   formatearEntero,
   formatearFecha,
+  formatearGarantia,
+  formatearMagnitud,
   formatearMoneda,
+  formatearPlazo,
   normalizar,
   promedioSeguro,
   sumaSegura,
@@ -32,6 +37,15 @@ const base: Producto = {
   activo: true,
   fechaAlta: '2024-03-15',
   descripcion: 'Producto de prueba.',
+  pesoKg: 1.2,
+  volumenL: 0.9,
+  material: 'Cartón',
+  origen: 'México',
+  plazoEntregaHoras: 48,
+  garantiaMeses: null,
+  ean: '7501234567890',
+  codigoArancelario: null,
+  ultimaSincronizacion: '2026-08-30T07:00:00.000Z',
 }
 
 const producto = (cambios: Partial<Producto>): Producto => ({ ...base, ...cambios })
@@ -105,6 +119,38 @@ describe('promedioSeguro y sumaSegura', () => {
   it('devuelven null cuando no queda ningún valor utilizable', () => {
     expect(promedioSeguro([null, undefined])).toBeNull()
     expect(sumaSegura([])).toBeNull()
+  })
+})
+
+describe('ficha logística', () => {
+  it('distingue «no aplica» de un dato pendiente', () => {
+    // La garantía en null significa que el artículo no la lleva. Mostrarlo
+    // como «Sin registrar» sugeriría que falta capturarlo.
+    expect(formatearGarantia(null)).toBe('No aplica')
+    expect(formatearGarantia(12)).toBe('12 meses')
+  })
+
+  it('nunca convierte una magnitud ausente en cero', () => {
+    expect(formatearMagnitud(null, 'kg')).toBe('Sin registrar')
+    expect(formatearMagnitud(1.5, 'kg')).toBe('1.50 kg')
+  })
+
+  it('expresa el plazo en la unidad que se lee mejor', () => {
+    expect(formatearPlazo(12)).toBe('12 h')
+    expect(formatearPlazo(24)).toBe('1 día')
+    expect(formatearPlazo(168)).toBe('7 días')
+    expect(formatearPlazo(null)).toBe('Sin registrar')
+  })
+
+  it('agrupa el EAN para poder dictarlo y tolera su ausencia', () => {
+    expect(formatearEan('7501234567890')).toBe('7 501234 567890')
+    expect(formatearEan(null)).toBe('Sin registrar')
+  })
+
+  it('resuelve la antigüedad de la sincronización sin romperse', () => {
+    expect(formatearAntiguedad(null)).toBe('Sin registrar')
+    expect(formatearAntiguedad('no es una fecha')).toBe('Sin registrar')
+    expect(formatearAntiguedad(new Date(Date.now() - 3 * 3600_000).toISOString())).toContain('3')
   })
 })
 

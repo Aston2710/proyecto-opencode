@@ -1,4 +1,4 @@
-// Generador del archivo base de datos del catálogo.
+﻿// Generador del archivo base de datos del catálogo.
 // Produce datos/productos.json con registros realistas e inconsistencias
 // intencionales (nulos, campos faltantes) para probar la tolerancia de la UI.
 import { mkdirSync, writeFileSync } from 'node:fs'
@@ -55,8 +55,35 @@ const marcas = ['La Rivera', 'Don Cosme', 'Vallesol', 'Prisma', 'Nortex', 'Mar d
 const proveedores = ['Distribuidora Centro', 'Grupo Andino', 'Comercial del Valle', 'Importadora Sur', 'Abastos del Norte']
 const almacenes = ['Almacén Central', 'Bodega Norte', 'Bodega Sur']
 
+// Ficha logística. El empaque depende de lo que se envasa, así que los
+// materiales van por categoría en lugar de sortearse de una lista única.
+const materiales = {
+  Abarrotes: ['Bolsa laminada', 'Lata de hojalata', 'Cartón', 'PET reciclable', 'Vidrio'],
+  Bebidas: ['PET reciclable', 'Lata de aluminio', 'Vidrio retornable', 'Envase multicapa'],
+  Limpieza: ['HDPE', 'PET reciclable', 'Cartón'],
+  'Cuidado Personal': ['HDPE', 'PET reciclable', 'Cartón', 'Aluminio'],
+  Papelería: ['Papel', 'Cartón', 'Polipropileno'],
+  Ferretería: ['Acero', 'Polipropileno', 'Cartón', 'Cobre'],
+  Snacks: ['Bolsa metalizada', 'Cartón'],
+  Lácteos: ['HDPE', 'Envase multicapa', 'Polipropileno'],
+}
+
+const origenes = ['México', 'México', 'México', 'Estados Unidos', 'China', 'Colombia', 'España']
+
+/** Dígito verificador del EAN-13, para que los códigos sean válidos de verdad. */
+function ean13(base) {
+  const suma = [...base].reduce(
+    (total, digito, indice) => total + Number(digito) * (indice % 2 === 0 ? 1 : 3),
+    0,
+  )
+  return base + String((10 - (suma % 10)) % 10)
+}
+
 const categorias = Object.keys(catalogo)
 const productos = []
+
+// Momento de referencia para las marcas de sincronización con el ERP.
+const AHORA = new Date('2026-08-30T09:00:00Z')
 
 for (let i = 1; i <= 240; i++) {
   const categoria = elegir(categorias)
@@ -80,10 +107,37 @@ for (let i = 1; i <= 240; i++) {
     activo: entre(0, 100) < 88,
     fechaAlta: `202${entre(3, 5)}-${String(entre(1, 12)).padStart(2, '0')}-${String(entre(1, 28)).padStart(2, '0')}`,
     descripcion: `${articulo} presentación ${presentacion}. Venta por caja de mayoreo.`,
+
+    // --- Ficha logística ---
+    pesoKg: Number((aleatorio() * 4.6 + 0.08).toFixed(2)),
+    volumenL: Number((aleatorio() * 3.8 + 0.05).toFixed(2)),
+    material: elegir(materiales[categoria]),
+    origen: elegir(origenes),
+    plazoEntregaHoras: elegir([24, 48, 72, 96, 120, 168]),
+    garantiaMeses: null,
+    ean: ean13(`750${String(entre(100000000, 999999999))}`),
+    codigoArancelario: null,
+    ultimaSincronizacion: null,
   }
 
   // El precio de mayoreo se calcula sobre el unitario.
   producto.precioMayoreo = Number((producto.precioUnitario * 0.82).toFixed(2))
+
+  // La garantía solo aplica a artículos de ferretería. En el resto la clave
+  // existe pero vale null: «no aplica» es distinto de «falta el dato».
+  if (categoria === 'Ferretería') {
+    producto.garantiaMeses = elegir([6, 12, 24])
+  }
+
+  // El código arancelario solo existe para lo importado.
+  if (producto.origen !== 'México') {
+    producto.codigoArancelario = `${entre(1000, 9899)}.${String(entre(10, 99))}.${String(entre(1, 99)).padStart(2, '0')}`
+  }
+
+  // Marca de la última sincronización con el ERP, dentro de las últimas 72 h.
+  producto.ultimaSincronizacion = new Date(
+    AHORA.getTime() - entre(5, 4320) * 60 * 1000,
+  ).toISOString()
 
   // --- Inconsistencias intencionales del archivo origen ---
   // Reflejan lo que ocurre en catálogos reales exportados de un ERP.
@@ -96,6 +150,16 @@ for (let i = 1; i <= 240; i++) {
   if (entre(0, 100) < 4) delete producto.almacen
   if (entre(0, 100) < 3) producto.fechaAlta = null
 
+  // La ficha logística se captura después del alta, así que llega más
+  // incompleta que los campos comerciales.
+  if (entre(0, 100) < 9) producto.pesoKg = null
+  if (entre(0, 100) < 11) producto.volumenL = null
+  if (entre(0, 100) < 8) producto.material = null
+  if (entre(0, 100) < 6) producto.origen = null
+  if (entre(0, 100) < 10) producto.plazoEntregaHoras = null
+  if (entre(0, 100) < 7) producto.ean = null
+  if (entre(0, 100) < 5) producto.ultimaSincronizacion = null
+
   productos.push(producto)
 }
 
@@ -103,7 +167,7 @@ const salida = {
   meta: {
     fuente: 'Exportación simulada del ERP de catálogo mayorista',
     generadoPor: 'scripts/generar-datos.mjs',
-    version: 1,
+    version: 2,
     totalRegistros: productos.length,
   },
   productos,

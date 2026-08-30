@@ -21,6 +21,20 @@ export interface Producto {
   activo: boolean
   fechaAlta: string | null
   descripcion: string | null
+
+  // Ficha logística. Se captura después del alta comercial, así que llega
+  // más incompleta que el resto del registro.
+  pesoKg: number | null
+  volumenL: number | null
+  material: string | null
+  origen: string | null
+  plazoEntregaHoras: number | null
+  /** `null` significa «no aplica», no «falta el dato». */
+  garantiaMeses: number | null
+  ean: string | null
+  /** Solo existe para mercancía importada. */
+  codigoArancelario: string | null
+  ultimaSincronizacion: string | null
 }
 
 export interface MetaCatalogo {

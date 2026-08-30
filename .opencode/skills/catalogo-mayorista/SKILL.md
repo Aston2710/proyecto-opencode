@@ -35,7 +35,18 @@ Contrato del archivo:
       "descuento": number,          // porcentaje 0-30
       "activo": boolean,
       "fechaAlta": string | null,   // ISO corto YYYY-MM-DD
-      "descripcion": string | null
+      "descripcion": string | null,
+
+      // Ficha logistica, capturada despues del alta comercial
+      "pesoKg": number | null,
+      "volumenL": number | null,
+      "material": string | null,
+      "origen": string | null,
+      "plazoEntregaHoras": number | null,
+      "garantiaMeses": number | null,      // null = NO APLICA, no es un hueco
+      "ean": string | null,
+      "codigoArancelario": string | null,  // solo mercancia importada
+      "ultimaSincronizacion": string | null
     }
   ]
 }
@@ -57,11 +68,19 @@ puede producir `NaN`, `undefined`, pantalla en blanco ni error en consola:
 | `almacen` ausente | Igual que `null`. Usar acceso opcional, jamás indexado directo. |
 | `descripcion` en `null` | Omitir el párrafo, no renderizar una cadena vacía. |
 | `fechaAlta` en `null` | Mostrar `—`. No construir `new Date(null)`. |
+| Campos de la ficha logística en `null` | Mostrar `Sin registrar` en cursiva atenuada. Jamás convertir a cero. |
+| `garantiaMeses` en `null` | Mostrar `No aplica`, **sin atenuar**: es una respuesta, no un hueco. |
+| `codigoArancelario` en `null` | Mostrar `Nacional`, **sin atenuar**: su ausencia significa que no se importó. |
 | Resultado de filtros vacío | Estado vacío explicativo con acción para limpiar filtros. |
 
 Toda lectura de campo opcional pasa por los ayudantes de `src/utilidades.ts`
-(`textoOpcional`, `formatearMoneda`, `formatearEntero`, `formatearFecha`).
-Nunca formatees en línea dentro del JSX.
+(`textoOpcional`, `formatearMoneda`, `formatearEntero`, `formatearFecha`,
+`formatearMagnitud`, `formatearPlazo`, `formatearGarantia`, `formatearEan`,
+`formatearAntiguedad`). Nunca formatees en línea dentro del JSX.
+
+**Distingue tres cosas distintas**: el dato que falta por capturar
+(`Sin registrar`), el que no aplica a ese artículo (`No aplica`, `Nacional`) y el
+que vale cero. Colapsarlos en una sola etiqueta hace mentir a la interfaz.
 
 ## 3. Diseño — sistema «Industrial Inventory Ledger»
 
@@ -80,8 +99,11 @@ Prohibidos: degradados, glassmorphism, ilustraciones, emojis.
 - **Acento:** un único `--acento` (verde de bodega), usado con avaricia: chips activos, botón primario, página actual y barras de la gráfica. Nada más.
 - **Semáforo de inventario:** `--ok` = stock sano, `--alerta` = bajo el mínimo, `--critico` (terracota apagado) = agotado, `--neutro` = sin dato. El color **nunca** comunica solo: siempre punto de color más texto.
 - **Tipografía:** una clase por rol, definidas en `index.css`. No inventes tamaños sueltos: usa `.t-page-title` (19/600), `.t-indicator` (22/600), `.t-card-title` (15/600), `.t-body` (13/400), `.t-metadata` (12/500), `.t-label-caps` (11/500 mayúsculas) y `.t-mono` (13/450, IBM Plex Mono para SKUs y cifras). Añade `cifras` a todo lo numérico.
-- **Forma:** rejilla base de 4 px, con utilidades `xs`/`sm`/`md`/`lg`/`xl` (4/8/16/24/32). Radio: `rounded-sm` 2px en distintivos, `rounded` 4px en contenedores y controles, `rounded-md` 6px en filas de producto, `rounded-full` solo en chips.
-- **Lista de resultados:** filas horizontales a ancho completo, no rejilla de tarjetas. Cada fila: distintivo de 48 px, SKU y precio en la línea superior, nombre, y pie con categoría, estado de inventario y metadatos.
+- **Forma:** rejilla base de 4 px, con utilidades `xs`/`sm`/`md`/`lg`/`xl` (4/8/16/24/32). Radio: `rounded-sm` 2px en distintivos, `rounded` 4px en contenedores y controles, `rounded-full` solo en chips.
+- **La lista es una tabla, no tarjetas.** Es una herramienta de escritorio para leer muchas filas de un vistazo. Las filas no llevan borde propio ni esquinas redondeadas: se separan con una línea de 1 px y viven dentro de un único contenedor. Las columnas tienen **ancho fijo** para que las cifras se apilen y se puedan recorrer con la vista.
+- **Columnas, en orden:** distintivo · SKU · producto · categoría · estado · reorden · existencias · entrega · unitario · descuento. Las secundarias se ocultan por punto de ruptura (`sm`, `md`, `lg`, `xl`), nunca se comprimen.
+- **El encabezado de columnas queda fijo** bajo la barra superior. Perder los rótulos al bajar obliga a subir para recordar qué columna es cuál.
+- **Medidor de reorden:** regleta por fila con la marca del mínimo fija en el mismo tercio en todas. Sirve para detectar faltantes recorriendo la columna, sin leer cifras. Sin stock registrado no se dibuja barra: estimarla sería inventar el dato.
 - **Modo oscuro:** carbón cálido, nunca azulado ni negro puro. Tres estados: claro por omisión, oscuro por `prefers-color-scheme`, y ambos forzables con `data-tema` en `<html>`. Ningún color se declara solo dentro del bloque oscuro.
 
 ### Reglas de experiencia de usuario, no negociables
@@ -94,8 +116,8 @@ Prohibidos: degradados, glassmorphism, ilustraciones, emojis.
 - Sin modales para el flujo principal; el detalle va en panel lateral.
 - Sin texto centrado en bloques largos, sin mayúsculas sostenidas fuera de las etiquetas de indicador.
 - **Paginación de 24 por página**, con el rango visible en el pie («Mostrando 1–24 de 240»).
-- **Sin imágenes de producto.** El archivo de datos no las tiene. El recuadro de 48 px que abre cada fila lleva el distintivo de la categoría, que es un dato real del registro, no un marcador de posición.
-- **Sin campos inventados.** Si un dato no está en `productos.json`, no se muestra. No importa que el diseño de referencia lo proponga.
+- **Sin imágenes de producto.** El archivo de datos no las tiene. El recuadro que abre cada fila lleva el distintivo de la categoría, que es un dato real del registro, no un marcador de posición.
+- **Sin campos inventados.** Si un dato no está en `productos.json`, no se muestra. Si el diseño pide un campo que falta, se amplía el generador y se regenera el archivo: la vista nunca simula lo que el origen no tiene.
 - **Sin acciones que no hacen nada.** Ningún botón decorativo: si no está implementado, no se dibuja.
 
 ## 4. Componentes

@@ -94,6 +94,7 @@ export default function App() {
             <ListaProductos
               productos={productosPagina}
               densidad={densidad}
+              seleccionado={seleccionado}
               onLimpiar={limpiarFiltros}
               onAbrir={setSeleccionado}
             />

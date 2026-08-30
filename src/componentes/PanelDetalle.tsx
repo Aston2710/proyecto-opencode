@@ -4,11 +4,50 @@ import {
   clasificarInventario,
   ESTILOS_INVENTARIO,
   ETIQUETAS_INVENTARIO,
+  formatearAntiguedad,
+  formatearEan,
   formatearEntero,
   formatearFecha,
+  formatearGarantia,
+  formatearMagnitud,
   formatearMoneda,
+  formatearPlazo,
   textoOpcional,
 } from '../utilidades'
+
+interface CampoFicha {
+  etiqueta: string
+  valor: string
+  ausente: boolean
+}
+
+/** Bloque de campos con su rótulo. Los huecos se marcan, no se ocultan. */
+function Ficha({ titulo, campos }: { titulo: string; campos: CampoFicha[] }) {
+  return (
+    <section className="border-t border-borde p-md">
+      <h3 className="t-label-caps mb-2 text-acento">{titulo}</h3>
+      <dl>
+        {campos.map((campo, indice) => (
+          <div
+            key={campo.etiqueta}
+            className={`flex items-baseline justify-between gap-md py-2 ${
+              indice === 0 ? '' : 'border-t border-borde'
+            }`}
+          >
+            <dt className="t-body text-texto-medio">{campo.etiqueta}</dt>
+            <dd
+              className={`t-mono text-right ${
+                campo.ausente ? 'text-texto-tenue italic' : 'text-texto'
+              }`}
+            >
+              {campo.valor}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  )
+}
 
 interface Props {
   producto: Producto | null
@@ -19,10 +58,9 @@ interface Props {
  * Panel lateral de detalle. Es un aparte, no un modal: se cierra con Escape o
  * pulsando fuera.
  *
- * La tabla lista **solo campos que existen en el archivo de datos**. El
- * sistema de diseño proponía además peso, volumen, material, origen, plazo de
- * entrega, garantía, EAN y código arancelario; ninguno se exporta desde el
- * ERP y añadirlos habría significado inventar datos.
+ * La tabla lista **solo campos que existen en el archivo de datos**. El sistema
+ * de diseño pedía además la ficha logística; en lugar de simularla en la vista
+ * se amplió el archivo origen, que es lo que manda en este proyecto.
  */
 export function PanelDetalle({ producto, onCerrar }: Props) {
   const cerrarRef = useRef<HTMLButtonElement>(null)
@@ -86,6 +124,50 @@ export function PanelDetalle({ producto, onCerrar }: Props) {
       ausente: producto.fechaAlta === null,
     },
     { etiqueta: 'Estado', valor: producto.activo ? 'Activo' : 'Inactivo', ausente: false },
+  ]
+
+  const ficha: Array<{ etiqueta: string; valor: string; ausente: boolean }> = [
+    {
+      etiqueta: 'Peso',
+      valor: formatearMagnitud(producto.pesoKg, 'kg'),
+      ausente: producto.pesoKg === null,
+    },
+    {
+      etiqueta: 'Volumen',
+      valor: formatearMagnitud(producto.volumenL, 'L'),
+      ausente: producto.volumenL === null,
+    },
+    {
+      etiqueta: 'Material',
+      valor: textoOpcional(producto.material, 'Sin registrar'),
+      ausente: producto.material === null,
+    },
+    {
+      etiqueta: 'Origen',
+      valor: textoOpcional(producto.origen, 'Sin registrar'),
+      ausente: producto.origen === null,
+    },
+    {
+      etiqueta: 'Plazo de entrega',
+      valor: formatearPlazo(producto.plazoEntregaHoras),
+      ausente: producto.plazoEntregaHoras === null,
+    },
+    {
+      etiqueta: 'Garantía',
+      valor: formatearGarantia(producto.garantiaMeses),
+      // «No aplica» es una respuesta, no un hueco: no se atenúa.
+      ausente: false,
+    },
+    {
+      etiqueta: 'EAN',
+      valor: formatearEan(producto.ean),
+      ausente: producto.ean === null,
+    },
+    {
+      etiqueta: 'Arancel',
+      valor: textoOpcional(producto.codigoArancelario, 'Nacional'),
+      ausente: false,
+    },
   ]
 
   return (
@@ -156,25 +238,12 @@ export function PanelDetalle({ producto, onCerrar }: Props) {
             </p>
           ) : null}
 
-          <dl className="p-md">
-            {campos.map((campo, indice) => (
-              <div
-                key={campo.etiqueta}
-                className={`flex items-baseline justify-between gap-md py-2.5 ${
-                  indice === 0 ? '' : 'border-t border-borde'
-                }`}
-              >
-                <dt className="t-label-caps text-texto-tenue">{campo.etiqueta}</dt>
-                <dd
-                  className={`t-body cifras text-right ${
-                    campo.ausente ? 'text-texto-tenue italic' : 'text-texto'
-                  }`}
-                >
-                  {campo.valor}
-                </dd>
-              </div>
-            ))}
-          </dl>
+          <Ficha titulo="Comercial" campos={campos} />
+          <Ficha titulo="Logística" campos={ficha} />
+
+          <p className="t-metadata border-t border-borde p-md text-texto-tenue">
+            Sincronizado con el ERP {formatearAntiguedad(producto.ultimaSincronizacion)}
+          </p>
         </div>
       </aside>
     </div>

@@ -6,26 +6,38 @@ import { FilaProducto } from './FilaProducto'
 interface Props {
   productos: Producto[]
   densidad: Densidad
+  seleccionado: Producto | null
   onLimpiar: () => void
   onAbrir: (producto: Producto) => void
 }
 
 /**
- * Lista de resultados. No filtra, ordena ni pagina: recibe la página ya
+ * Libro de inventario. No filtra, ordena ni pagina: recibe la página ya
  * resuelta. Un arreglo vacío no es un error, es un estado con salida.
  */
-export function ListaProductos({ productos, densidad, onLimpiar, onAbrir }: Props) {
+export function ListaProductos({
+  productos,
+  densidad,
+  seleccionado,
+  onLimpiar,
+  onAbrir,
+}: Props) {
   if (productos.length === 0) {
     return <EstadoVacio onLimpiar={onLimpiar} />
   }
 
   return (
-    <div>
+    <div className="overflow-hidden rounded border border-borde bg-superficie">
       <EncabezadoLista />
-      <ul className={`flex flex-col ${densidad === 'comoda' ? 'gap-sm' : 'gap-xs'}`}>
+      <ul className="flex flex-col [&>li:last-child>button]:border-b-0">
         {productos.map((producto) => (
           <li key={producto.id}>
-            <FilaProducto producto={producto} densidad={densidad} onAbrir={onAbrir} />
+            <FilaProducto
+              producto={producto}
+              densidad={densidad}
+              seleccionado={seleccionado?.id === producto.id}
+              onAbrir={onAbrir}
+            />
           </li>
         ))}
       </ul>

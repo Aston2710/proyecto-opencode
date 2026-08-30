@@ -69,6 +69,62 @@ export function clasificarInventario(producto: Producto): EstadoInventario {
   return 'disponible'
 }
 
+/** Formatea una magnitud con su unidad. Un nulo no se convierte en cero. */
+export function formatearMagnitud(
+  valor: number | null | undefined,
+  unidad: string,
+  decimales = 2,
+): string {
+  if (typeof valor !== 'number' || !Number.isFinite(valor)) return 'Sin registrar'
+  return `${valor.toFixed(decimales)} ${unidad}`
+}
+
+/**
+ * Convierte horas a la unidad que se lee mejor. Un plazo de entrega de 168
+ * horas se entiende como «7 días», no contando.
+ */
+export function formatearPlazo(horas: number | null | undefined): string {
+  if (typeof horas !== 'number' || !Number.isFinite(horas)) return 'Sin registrar'
+  if (horas < 24) return `${horas} h`
+  const dias = horas / 24
+  return `${Number.isInteger(dias) ? dias : dias.toFixed(1)} día${dias === 1 ? '' : 's'}`
+}
+
+/**
+ * Garantía en meses. `null` aquí significa que el artículo no la lleva, que es
+ * distinto de un dato pendiente de capturar.
+ */
+export function formatearGarantia(meses: number | null | undefined): string {
+  if (typeof meses !== 'number' || !Number.isFinite(meses)) return 'No aplica'
+  return `${meses} meses`
+}
+
+/** Agrupa un EAN-13 para que se pueda leer y dictar. */
+export function formatearEan(ean: string | null | undefined): string {
+  if (typeof ean !== 'string' || ean.trim() === '') return 'Sin registrar'
+  const limpio = ean.trim()
+  if (limpio.length !== 13) return limpio
+  return `${limpio.slice(0, 1)} ${limpio.slice(1, 7)} ${limpio.slice(7, 13)}`
+}
+
+const formateadorRelativo = new Intl.RelativeTimeFormat('es-MX', { numeric: 'auto' })
+
+/**
+ * Antigüedad de la última sincronización con el ERP, relativa al momento de
+ * lectura. Se apoya en `Intl` en lugar de calcular cadenas a mano.
+ */
+export function formatearAntiguedad(iso: string | null | undefined): string {
+  if (typeof iso !== 'string' || iso.trim() === '') return 'Sin registrar'
+  const momento = new Date(iso)
+  if (Number.isNaN(momento.getTime())) return 'Sin registrar'
+
+  const minutos = Math.round((momento.getTime() - Date.now()) / 60000)
+  if (Math.abs(minutos) < 60) return formateadorRelativo.format(minutos, 'minute')
+  const horas = Math.round(minutos / 60)
+  if (Math.abs(horas) < 24) return formateadorRelativo.format(horas, 'hour')
+  return formateadorRelativo.format(Math.round(horas / 24), 'day')
+}
+
 /** Nombre visible de cualquier valor del filtro de inventario. */
 export function etiquetaFiltroInventario(valor: FiltroInventario): string {
   if (valor === 'todos') return 'Todos'
