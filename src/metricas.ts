@@ -171,6 +171,23 @@ export function inventariarHuecos(productos: Producto[]): HuecoCatalogo[] {
   ].filter((hueco) => hueco.conteo > 0)
 }
 
+/**
+ * Marca de sincronización más reciente del catálogo.
+ * Es la que interesa mostrar: dice cuán fresca es la información en pantalla.
+ */
+export function ultimaSincronizacion(productos: Producto[]): string | null {
+  let masReciente: string | null = null
+
+  for (const producto of productos) {
+    const marca = producto.ultimaSincronizacion
+    if (typeof marca !== 'string' || marca.trim() === '') continue
+    if (Number.isNaN(new Date(marca).getTime())) continue
+    if (masReciente === null || marca > masReciente) masReciente = marca
+  }
+
+  return masReciente
+}
+
 export interface ValorCategoria {
   categoria: string
   valor: number

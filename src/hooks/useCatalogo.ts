@@ -161,11 +161,11 @@ export function useCatalogo() {
     try {
       const respuesta = await fetch(RUTA_DATOS, { signal: senal })
       if (!respuesta.ok) {
-        throw new Error(`El servidor respondió ${respuesta.status} al pedir el catálogo.`)
+        throw new Error(`El servicio de catálogo respondió ${respuesta.status}.`)
       }
       const crudo: unknown = await respuesta.json()
       if (!esArchivoValido(crudo)) {
-        throw new Error('El archivo de datos no contiene un arreglo "productos".')
+        throw new Error('La respuesta del catálogo no tiene el formato esperado.')
       }
       const utilizables = crudo.productos.filter(esProductoUtilizable)
       if (senal?.aborted === true) return

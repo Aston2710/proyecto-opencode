@@ -197,7 +197,7 @@ describe('resistencia ante un archivo defectuoso', () => {
     const texto = await montar()
 
     expect(contenedor.querySelector('[role="alert"]')).not.toBeNull()
-    expect(texto).toContain('No se pudo cargar el archivo de datos')
+    expect(texto).toContain('No se pudo cargar el catálogo')
     expect(texto).toContain('500')
     expect(texto).toContain('Reintentar')
   })
@@ -206,7 +206,7 @@ describe('resistencia ante un archivo defectuoso', () => {
     simularRespuesta('{"meta":{},"otraCosa":[]}')
     const texto = await montar()
 
-    expect(texto).toContain('no contiene un arreglo')
+    expect(texto).toContain('no tiene el formato esperado')
   })
 
   it('descarta los registros sin id, nombre o categoría y lo informa', async () => {
@@ -219,7 +219,7 @@ describe('resistencia ante un archivo defectuoso', () => {
 
     const texto = await montar()
 
-    expect(texto).toContain('Se descartaron 1 registros')
+    expect(texto).toContain('Se omitieron 1 referencias')
     expect(texto).toContain('Producto válido')
   })
 })

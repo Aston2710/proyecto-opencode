@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react'
+﻿import { useMemo, useState } from 'react'
 import { AvisoError } from './componentes/AvisoError'
 import { BarraSuperior } from './componentes/BarraSuperior'
 import { EsqueletoCatalogo } from './componentes/EsqueletoCatalogo'
 import { PanelDetalle } from './componentes/PanelDetalle'
+import { PieDatos } from './componentes/PieDatos'
 import { useCatalogo } from './hooks/useCatalogo'
 import { useRuta } from './hooks/useRuta'
 import { useTema } from './hooks/useTema'
@@ -10,6 +11,7 @@ import {
   colaReposicion,
   inventariarHuecos,
   resumirNegocio,
+  ultimaSincronizacion,
   valorPorCategoria,
 } from './metricas'
 import { Catalogo } from './paginas/Catalogo'
@@ -33,6 +35,7 @@ export default function App() {
   const cola = useMemo(() => colaReposicion(productos), [productos])
   const huecos = useMemo(() => inventariarHuecos(productos), [productos])
   const valores = useMemo(() => valorPorCategoria(productos), [productos])
+  const sincronizacion = useMemo(() => ultimaSincronizacion(productos), [productos])
 
   function aplicarVista(vista: VistaGuardada) {
     catalogo.aplicarVista(vista)
@@ -66,8 +69,8 @@ export default function App() {
           <>
             {descartados > 0 ? (
               <p className="t-metadata rounded border border-alerta bg-alerta-suave px-md py-2.5 text-alerta">
-                Se descartaron {formatearEntero(descartados)} registros del archivo por carecer de
-                id, nombre o categoría.
+                Se omitieron {formatearEntero(descartados)} referencias por carecer de clave, nombre o
+                categoría. Revísalas en el sistema de origen.
               </p>
             ) : null}
 
@@ -116,13 +119,11 @@ export default function App() {
         ) : null}
       </main>
 
-      <footer className="border-t border-borde px-md py-lg">
-        <p className="t-metadata mx-auto max-w-[1240px] text-texto-tenue">
-          Proyecto final del Curso de Desarrollo con Inteligencia Artificial. Interfaz generada
-          íntegramente mediante agentes; los datos provienen de{' '}
-          <code className="font-mono">public/datos/productos.json</code>.
-        </p>
-      </footer>
+      <PieDatos
+        origen={catalogo.meta?.fuente ?? null}
+        referencias={productos.length}
+        sincronizacion={sincronizacion}
+      />
 
       <PanelDetalle producto={seleccionado} onCerrar={() => setSeleccionado(null)} />
     </div>

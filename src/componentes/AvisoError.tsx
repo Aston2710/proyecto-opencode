@@ -1,4 +1,4 @@
-interface Props {
+﻿interface Props {
   mensaje: string | null
   onReintentar: () => void
 }
@@ -14,10 +14,10 @@ export function AvisoError({ mensaje, onReintentar }: Props) {
       className="flex flex-col items-start gap-3 rounded border border-critico bg-critico-suave p-md"
     >
       <div>
-        <p className="t-card-title text-critico">No se pudo cargar el archivo de datos</p>
+        <p className="t-card-title text-critico">No se pudo cargar el catálogo</p>
         <p className="t-body mt-1 text-texto-medio">
-          {mensaje ?? 'Causa desconocida.'} La interfaz permanece estable y no se renderizó
-          ningún dato parcial.
+          {mensaje ?? 'Causa desconocida.'} No se muestra información parcial para evitar
+          decisiones sobre datos incompletos.
         </p>
       </div>
       <button

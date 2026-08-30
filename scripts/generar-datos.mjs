@@ -165,7 +165,7 @@ for (let i = 1; i <= 240; i++) {
 
 const salida = {
   meta: {
-    fuente: 'Exportación simulada del ERP de catálogo mayorista',
+    fuente: 'Sincronizado desde ERP Central',
     generadoPor: 'scripts/generar-datos.mjs',
     version: 2,
     totalRegistros: productos.length,
