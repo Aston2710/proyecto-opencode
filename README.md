@@ -1,13 +1,14 @@
 ﻿# Catálogo Mayorista
 
 Panel de inventario que lee un archivo de datos externo y construye toda su
-interfaz a partir de él: métricas, filtros, gráfica y rejilla de tarjetas.
+interfaz a partir de él. Dos pantallas: un panel con los indicadores del negocio
+y la cola de reposición, y un catálogo con búsqueda, filtros y vistas guardadas.
 
 Proyecto final del **Curso de Desarrollo con Inteligencia Artificial**. La
 totalidad del código fue generada mediante agentes de IA; no se escribió lógica
 de programación a mano.
 
-- **Aplicación desplegada:** _(pendiente de publicar)_
+- **Aplicación desplegada:** https://proyecto-opencode.vercel.app
 - **Informe:** [`INFORME.md`](./INFORME.md)
 - **Prompts utilizados:** [`docs/PROMPTS.md`](./docs/PROMPTS.md)
 - **Bitácora de depuración:** [`docs/BITACORA.md`](./docs/BITACORA.md)
@@ -22,7 +23,7 @@ de programación a mano.
 | 2 | Integración de contexto de datos | [`public/datos/productos.json`](./public/datos/productos.json) — 240 registros cargados por `fetch`; todos los filtros se derivan de él en [`src/hooks/useCatalogo.ts`](./src/hooks/useCatalogo.ts) |
 | 3 | Skill y comando personalizado | Skill [`catalogo-mayorista`](./.opencode/skills/catalogo-mayorista/SKILL.md) y comandos [`/renderizar_tarjetas`](./.opencode/commands/renderizar_tarjetas.md) y [`/auditar_datos`](./.opencode/commands/auditar_datos.md) |
 | 4 | Agente personalizado | Agente [`auditor-datos`](./.opencode/agents/auditor-datos.md), invocado desde `/auditar_datos` |
-| 5 | Refactorización y depuración autónoma | [`docs/BITACORA.md`](./docs/BITACORA.md) — 6 fallos con causa raíz y corrección, más [`src/pruebas/`](./src/pruebas/) que fija el contrato |
+| 5 | Refactorización y depuración autónoma | [`docs/BITACORA.md`](./docs/BITACORA.md) — 7 fallos con causa raíz y corrección, más [`src/pruebas/`](./src/pruebas/) que fija el contrato |
 | 6 | Despliegue a producción | Enlace público al inicio de este documento |
 
 ---
@@ -32,21 +33,24 @@ de programación a mano.
 ```
 .opencode/
   agents/auditor-datos.md            Agente que audita el archivo de datos
-  commands/renderizar_tarjetas.md    Comando que orquesta la rejilla
+  commands/renderizar_tarjetas.md    Comando que orquesta la lista de productos
   commands/auditar_datos.md          Comando que delega en el agente
   skills/catalogo-mayorista/         Contrato de datos, diseño y prohibiciones
 public/datos/productos.json          Archivo base. Fuente de verdad.
 scripts/generar-datos.mjs            Generador reproducible del archivo base
 src/
+  paginas/                           Panel y Catálogo
   componentes/                       Presentación pura, sin acceso a datos
-  hooks/useCatalogo.ts               Carga, filtrado, métricas y series
+  hooks/useCatalogo.ts               Carga, filtrado, orden y paginación
+  metricas.ts                        Indicadores del negocio, funciones puras
   pruebas/                           Contrato de nulos y humo de la aplicación
   tipos.ts                           Contrato del archivo, en TypeScript
   utilidades.ts                      Única capa que decide qué mostrar si falta un dato
 docs/                                Prompts y bitácora de depuración
 ```
 
-**Vite · React 19 · TypeScript · Tailwind CSS v4 · Recharts**
+**Vite · React 19 · TypeScript · Tailwind CSS v4**. Sin dependencias de interfaz:
+las gráficas son barras en HTML y el enrutado se resuelve por fragmento de URL.
 
 ### Principio de diseño
 
@@ -100,7 +104,7 @@ Dentro del proyecto, con OpenCode:
 
 ```
 /auditar_datos              Audita el archivo y devuelve pendientes de interfaz
-/renderizar_tarjetas        Regenera la rejilla derivándola de los datos
+/renderizar_tarjetas        Regenera la lista derivándola de los datos
 /renderizar_tarjetas agrega el proveedor al pie de la tarjeta
 ```
 
