@@ -243,6 +243,25 @@ devuelve requisitos; el agente principal los contrasta contra el código y aplic
 lo que falte siguiendo la skill. Auditar y construir están separados a propósito:
 quien escribe el código no es quien decide si los datos están bien.
 
+**Verificación de la cadena.** Al ejecutar `/auditar_datos stock` en OpenCode, el
+comando desplegó sus cuatro pasos como lista de tareas y delegó el primero al
+subagente:
+
+```
+[•] Delegar auditoría de stock al subagente @auditor-datos
+[ ] Contrastar requisitos de auditoría con el código actual
+[ ] Registrar veredicto y pendientes en docs/BITACORA.md
+[ ] Entregar plan de cambios pendientes en la interfaz
+
+  Auditor-Datos Task — Auditoría de stock en productos.json
+    Bash  node "...\opencode\auditar.mjs"
+```
+
+Lo relevante es la última línea. El subagente no estimó las cifras: **escribió un
+script de Node desechable y contó sobre el archivo**, que es exactamente lo que
+le exige su instrucción central. La restricción dejó de ser una frase en el
+prompt y se convirtió en comportamiento observable.
+
 ### Norma 5 — Refactorización y depuración autónoma
 
 Seis fallos documentados en `docs/BITACORA.md`, todos resueltos con el mismo
