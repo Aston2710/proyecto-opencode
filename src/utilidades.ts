@@ -69,6 +69,43 @@ export function clasificarInventario(producto: Producto): EstadoInventario {
   return 'disponible'
 }
 
+// Se compone a mano en lugar de usar `style: 'currency'` con notación
+// compacta: en es-MX eso coloca el símbolo detrás —«24.8 M$»— y se lee mal en
+// un indicador.
+const formateadorCompacto = new Intl.NumberFormat('es-MX', {
+  notation: 'compact',
+  maximumFractionDigits: 1,
+})
+
+const formateadorSinCentavos = new Intl.NumberFormat('es-MX', {
+  style: 'currency',
+  currency: 'MXN',
+  maximumFractionDigits: 0,
+})
+
+/**
+ * Importe para indicadores. Tres tramos, porque abreviar siempre pierde
+ * precisión donde no hace falta:
+ *
+ * - menos de mil: importe exacto con centavos;
+ * - hasta el millón: importe agrupado sin centavos, que sigue siendo legible;
+ * - a partir del millón: abreviado, `$24.8 M`, donde la magnitud importa más
+ *   que el peso suelto.
+ */
+export function formatearMonedaCompacta(valor: number | null | undefined): string {
+  if (typeof valor !== 'number' || !Number.isFinite(valor)) return 'Sin datos'
+  const magnitud = Math.abs(valor)
+  if (magnitud < 1000) return formatearMoneda(valor)
+  if (magnitud < 1_000_000) return formateadorSinCentavos.format(valor)
+  return `$${formateadorCompacto.format(valor)}`
+}
+
+/** Porcentaje con un decimal como mucho. */
+export function formatearPorcentaje(valor: number | null | undefined): string {
+  if (typeof valor !== 'number' || !Number.isFinite(valor)) return 'Sin datos'
+  return `${valor % 1 === 0 ? valor : valor.toFixed(1)}%`
+}
+
 /** Formatea una magnitud con su unidad. Un nulo no se convierte en cero. */
 export function formatearMagnitud(
   valor: number | null | undefined,

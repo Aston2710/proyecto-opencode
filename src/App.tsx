@@ -1,55 +1,65 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { AvisoError } from './componentes/AvisoError'
-import { BarraHerramientas } from './componentes/BarraHerramientas'
 import { BarraSuperior } from './componentes/BarraSuperior'
 import { EsqueletoCatalogo } from './componentes/EsqueletoCatalogo'
-import { GraficaCategorias } from './componentes/GraficaCategorias'
-import { Paginacion } from './componentes/Paginacion'
 import { PanelDetalle } from './componentes/PanelDetalle'
-import { PanelMetricas } from './componentes/PanelMetricas'
-import { TablaProductos } from './componentes/TablaProductos'
 import { useCatalogo } from './hooks/useCatalogo'
+import { useRuta } from './hooks/useRuta'
 import { useTema } from './hooks/useTema'
-import type { Producto } from './tipos'
+import {
+  colaReposicion,
+  inventariarHuecos,
+  resumirNegocio,
+  valorPorCategoria,
+} from './metricas'
+import { Catalogo } from './paginas/Catalogo'
+import { Panel } from './paginas/Panel'
+import type { Producto, VistaGuardada } from './tipos'
 import { formatearEntero } from './utilidades'
+import { buscarVista, VISTAS_GUARDADAS } from './vistas'
 
 export default function App() {
-  const {
-    estado,
-    mensajeError,
-    descartados,
-    categorias,
-    resultados,
-    productosPagina,
-    pagina,
-    totalPaginas,
-    rango,
-    irAPagina,
-    densidad,
-    setDensidad,
-    metricas,
-    serieCategorias,
-    filtros,
-    filtrosActivos,
-    actualizarFiltros,
-    alternarCategoria,
-    limpiarFiltros,
-    ordenarPor,
-    reintentar,
-  } = useCatalogo()
-
+  const catalogo = useCatalogo()
+  const { ruta, navegar } = useRuta()
   const { esOscuro, alternar } = useTema()
   const [seleccionado, setSeleccionado] = useState<Producto | null>(null)
+  const [vistaActiva, setVistaActiva] = useState<string | null>('todos')
+
+  const { productos, estado, mensajeError, descartados } = catalogo
+
+  // El panel resume el catálogo completo, no el filtrado: son los indicadores
+  // del negocio, no los del recorte que el usuario tenga abierto.
+  const resumen = useMemo(() => resumirNegocio(productos), [productos])
+  const cola = useMemo(() => colaReposicion(productos), [productos])
+  const huecos = useMemo(() => inventariarHuecos(productos), [productos])
+  const valores = useMemo(() => valorPorCategoria(productos), [productos])
+
+  function aplicarVista(vista: VistaGuardada) {
+    catalogo.aplicarVista(vista)
+    setVistaActiva(vista.clave)
+  }
+
+  /** Salta al catálogo con una vista guardada ya aplicada. */
+  function irAVista(clave: string) {
+    const vista = buscarVista(clave) ?? VISTAS_GUARDADAS[0]
+    aplicarVista(vista)
+    navegar('catalogo')
+  }
 
   return (
     <div className="min-h-screen bg-fondo">
-      <BarraSuperior esOscuro={esOscuro} onAlternarTema={alternar} />
+      <BarraSuperior
+        ruta={ruta}
+        esOscuro={esOscuro}
+        onNavegar={navegar}
+        onAlternarTema={alternar}
+      />
 
       <main className="mx-auto flex max-w-[1240px] flex-col gap-md px-md py-md">
         {estado === 'cargando' ? <EsqueletoCatalogo /> : null}
 
         {estado === 'error' ? (
-          <AvisoError mensaje={mensajeError} onReintentar={reintentar} />
+          <AvisoError mensaje={mensajeError} onReintentar={catalogo.reintentar} />
         ) : null}
 
         {estado === 'listo' ? (
@@ -61,52 +71,47 @@ export default function App() {
               </p>
             ) : null}
 
-            <PanelMetricas
-              metricas={metricas}
-              filtrandoAtencion={filtros.inventario === 'atencion'}
-              onVerAtencion={() =>
-                actualizarFiltros({
-                  inventario: filtros.inventario === 'atencion' ? 'todos' : 'atencion',
-                })
-              }
-            />
-
-            <BarraHerramientas
-              filtros={filtros}
-              categorias={categorias}
-              filtrosActivos={filtrosActivos}
-              densidad={densidad}
-              onCambiar={actualizarFiltros}
-              onAlternarCategoria={alternarCategoria}
-              onLimpiar={limpiarFiltros}
-              onCambiarDensidad={setDensidad}
-            />
-
-            <TablaProductos
-              productos={productosPagina}
-              densidad={densidad}
-              orden={filtros.orden}
-              seleccionado={seleccionado}
-              onOrdenar={ordenarPor}
-              onLimpiar={limpiarFiltros}
-              onAbrir={setSeleccionado}
-            />
-
-            <div className="flex flex-wrap items-center justify-between gap-md">
-              <p className="t-metadata text-texto-tenue">
-                En la columna <span className="text-texto-medio">Reorden</span>, la marca vertical
-                señala el mínimo de cada producto.
-              </p>
-              <Paginacion
-                pagina={pagina}
-                totalPaginas={totalPaginas}
-                rango={rango}
-                total={resultados.length}
-                onIr={irAPagina}
+            {ruta === 'panel' ? (
+              <Panel
+                resumen={resumen}
+                cola={cola}
+                huecos={huecos}
+                valorPorCategoria={valores}
+                onAbrirProducto={setSeleccionado}
+                onIrAVista={irAVista}
               />
-            </div>
-
-            <GraficaCategorias datos={serieCategorias} />
+            ) : (
+              <Catalogo
+                filtros={catalogo.filtros}
+                categorias={catalogo.categorias}
+                filtrosActivos={catalogo.filtrosActivos}
+                densidad={catalogo.densidad}
+                productosPagina={catalogo.productosPagina}
+                totalResultados={catalogo.resultados.length}
+                pagina={catalogo.pagina}
+                totalPaginas={catalogo.totalPaginas}
+                rango={catalogo.rango}
+                vistaActiva={vistaActiva}
+                seleccionado={seleccionado}
+                onCambiar={(cambios) => {
+                  catalogo.actualizarFiltros(cambios)
+                  setVistaActiva(null)
+                }}
+                onAlternarCategoria={(categoria) => {
+                  catalogo.alternarCategoria(categoria)
+                  setVistaActiva(null)
+                }}
+                onLimpiar={() => {
+                  catalogo.limpiarFiltros()
+                  setVistaActiva('todos')
+                }}
+                onCambiarDensidad={catalogo.setDensidad}
+                onAplicarVista={aplicarVista}
+                onOrdenar={catalogo.ordenarPor}
+                onIrAPagina={catalogo.irAPagina}
+                onAbrir={setSeleccionado}
+              />
+            )}
           </>
         ) : null}
       </main>

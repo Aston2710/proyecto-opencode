@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Pruebas de humo de la aplicación completa contra el archivo de datos real.
  * Sustituyen a la inspección manual de la consola del navegador: si un `null`
  * del archivo llegara sin filtrar al DOM, el render fallaría aquí.
@@ -59,8 +59,13 @@ const productoBase = {
   descripcion: 'Descripción de prueba.',
 }
 
-/** Monta la aplicación y espera a que el efecto de carga se resuelva. */
-async function montar() {
+/**
+ * Monta la aplicación en la ruta indicada y espera a que el efecto de carga
+ * se resuelva. La pantalla inicial es el panel; las pruebas de la tabla piden
+ * el catálogo explícitamente.
+ */
+async function montar(ruta: 'panel' | 'catalogo' = 'catalogo') {
+  window.location.hash = `#/${ruta}`
   contenedor = document.createElement('div')
   document.body.appendChild(contenedor)
   raiz = createRoot(contenedor)
@@ -77,10 +82,6 @@ async function montar() {
 
 beforeEach(() => {
   globalThis.IS_REACT_ACT_ENVIRONMENT = true
-  // Recharts mide su contenedor; en jsdom todo mide cero y avisa por consola.
-  // Se le da un tamaño para que la gráfica se monte de verdad.
-  vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(900)
-  vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(300)
 })
 
 afterEach(() => {
@@ -220,5 +221,80 @@ describe('resistencia ante un archivo defectuoso', () => {
 
     expect(texto).toContain('Se descartaron 1 registros')
     expect(texto).toContain('Producto válido')
+  })
+})
+
+describe('panel', () => {
+  it('abre como pantalla inicial cuando no hay ruta', async () => {
+    simularRespuesta(archivoReal)
+    window.location.hash = ''
+
+    contenedor = document.createElement('div')
+    document.body.appendChild(contenedor)
+    raiz = createRoot(contenedor)
+    await act(async () => {
+      raiz?.render(<App />)
+    })
+    await act(async () => {
+      await Promise.resolve()
+    })
+
+    expect(contenedor.textContent).toContain('Valor del inventario')
+    expect(contenedor.textContent).toContain('Cola de reposición')
+    // El panel no muestra la tabla: son dos pantallas distintas.
+    expect(contenedor.querySelector('table')).toBeNull()
+  })
+
+  it('presenta los cuatro indicadores del negocio', async () => {
+    simularRespuesta(archivoReal)
+    const texto = await montar('panel')
+
+    expect(texto).toContain('Valor del inventario')
+    expect(texto).toContain('Requieren reposición')
+    expect(texto).toContain('Costo de reponer')
+    expect(texto).toContain('Integridad del catálogo')
+    expect(texto).not.toContain('NaN')
+    expect(texto).not.toContain('Sin datos')
+  })
+
+  it('ordena la cola de reposición con los agotados primero', async () => {
+    simularRespuesta(
+      archivoCon([
+        { ...productoBase, id: 'SKU-0001', nombre: 'Bajo barato', stock: 5, precioUnitario: 10 },
+        { ...productoBase, id: 'SKU-0002', nombre: 'Sin existencias', stock: 0 },
+        { ...productoBase, id: 'SKU-0003', nombre: 'Bajo caro', stock: 5, precioUnitario: 900 },
+        { ...productoBase, id: 'SKU-0004', nombre: 'Con inventario', stock: 400 },
+      ]),
+    )
+
+    await montar('panel')
+
+    const filas = [...contenedor.querySelectorAll('li')]
+      .map((li) => li.textContent ?? '')
+      .filter((texto) => texto.includes('SKU-'))
+
+    // Lo agotado va primero porque ya está perdiendo la venta; dentro del
+    // resto manda el dinero comprometido, no el orden alfabético.
+    expect(filas[0]).toContain('Sin existencias')
+    expect(filas[1]).toContain('Bajo caro')
+    expect(filas[2]).toContain('Bajo barato')
+    expect(filas.some((fila) => fila.includes('Con inventario'))).toBe(false)
+  })
+
+  it('excluye del valor del inventario los registros incompletos', async () => {
+    simularRespuesta(
+      archivoCon([
+        { ...productoBase, id: 'SKU-0001', precioUnitario: 100, stock: 10 },
+        { ...productoBase, id: 'SKU-0002', precioUnitario: null, stock: 999 },
+        { ...productoBase, id: 'SKU-0003', precioUnitario: 500, stock: null },
+      ]),
+    )
+
+    const texto = await montar('panel')
+
+    // Solo el primero aporta: 100 × 10 = 1000. Contar los otros como cero
+    // pasaría desapercibido; contarlos con precio cero abarataría el almacén.
+    expect(texto).toContain('$1,000')
+    expect(texto).toContain('2 sin precio o sin existencias, excluidos')
   })
 })

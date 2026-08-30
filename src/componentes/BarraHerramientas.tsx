@@ -1,5 +1,6 @@
-import type {
+﻿import type {
   Densidad,
+  FiltroActividad,
   FiltroActivo,
   FiltroInventario,
   FiltrosCatalogo,
@@ -48,8 +49,9 @@ export function BarraHerramientas({
 }: Props) {
   const secundariosAplicados =
     (filtros.inventario === 'todos' ? 0 : 1) +
-    (filtros.soloActivos ? 1 : 0) +
-    (filtros.soloDescuento ? 1 : 0)
+    (filtros.actividad === 'todos' ? 0 : 1) +
+    (filtros.soloDescuento ? 1 : 0) +
+    (filtros.soloSinPrecio ? 1 : 0)
 
   return (
     <section
@@ -115,16 +117,31 @@ export function BarraHerramientas({
               </select>
             </label>
 
+            <label className="t-metadata mt-3 block text-texto-medio">
+              Alta en catálogo
+              <select
+                value={filtros.actividad}
+                onChange={(evento) =>
+                  onCambiar({ actividad: evento.target.value as FiltroActividad })
+                }
+                className="t-body mt-1 h-9 w-full rounded border border-borde bg-superficie-sutil px-2 text-texto"
+              >
+                <option value="todos">Todos</option>
+                <option value="activos">Solo activos</option>
+                <option value="inactivos">Solo inactivos</option>
+              </select>
+            </label>
+
             <div className="mt-3 flex flex-col gap-2 border-t border-borde pt-3">
-              <Interruptor
-                etiqueta="Solo productos activos"
-                activo={filtros.soloActivos}
-                onCambiar={(valor) => onCambiar({ soloActivos: valor })}
-              />
               <Interruptor
                 etiqueta="Solo con descuento"
                 activo={filtros.soloDescuento}
                 onCambiar={(valor) => onCambiar({ soloDescuento: valor })}
+              />
+              <Interruptor
+                etiqueta="Solo sin precio registrado"
+                activo={filtros.soloSinPrecio}
+                onCambiar={(valor) => onCambiar({ soloSinPrecio: valor })}
               />
             </div>
           </div>

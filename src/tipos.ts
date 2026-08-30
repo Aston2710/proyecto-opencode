@@ -68,13 +68,28 @@ export type Densidad = 'comoda' | 'compacta'
  */
 export type FiltroInventario = EstadoInventario | 'todos' | 'atencion'
 
+/** Estado de alta del producto en el catálogo. */
+export type FiltroActividad = 'todos' | 'activos' | 'inactivos'
+
 export interface FiltrosCatalogo {
   busqueda: string
   categorias: string[]
   inventario: FiltroInventario
-  soloActivos: boolean
+  actividad: FiltroActividad
   soloDescuento: boolean
+  soloSinPrecio: boolean
   orden: OrdenCatalogo
+}
+
+/**
+ * Vista guardada del catálogo: un nombre y el juego de filtros que aplica.
+ * Son los recortes que el comprador pide a diario, resueltos de un clic.
+ */
+export interface VistaGuardada {
+  clave: string
+  nombre: string
+  descripcion: string
+  filtros: Partial<FiltrosCatalogo>
 }
 
 /** Columnas por las que se puede ordenar pulsando su encabezado. */

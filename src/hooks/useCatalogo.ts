@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Única capa que conoce el origen de los datos.
  *
  * Carga el archivo base por `fetch` en tiempo de ejecución: sustituir
@@ -19,6 +19,7 @@ import type {
   OpcionFiltro,
   OrdenCatalogo,
   Producto,
+  VistaGuardada,
 } from '../tipos'
 import {
   clasificarInventario,
@@ -38,8 +39,9 @@ export const FILTROS_INICIALES: FiltrosCatalogo = {
   busqueda: '',
   categorias: [],
   inventario: 'todos',
-  soloActivos: false,
+  actividad: 'todos',
   soloDescuento: false,
+  soloSinPrecio: false,
   orden: { campo: 'nombre', direccion: 'asc' },
 }
 
@@ -103,8 +105,10 @@ function aplicarFiltros(
   const termino = normalizar(filtros.busqueda)
 
   return productos.filter((producto) => {
-    if (filtros.soloActivos && !producto.activo) return false
+    if (filtros.actividad === 'activos' && !producto.activo) return false
+    if (filtros.actividad === 'inactivos' && producto.activo) return false
     if (filtros.soloDescuento && !(producto.descuento > 0)) return false
+    if (filtros.soloSinPrecio && producto.precioUnitario !== null) return false
 
     if (
       !omitirCategorias &&
@@ -266,6 +270,11 @@ export function useCatalogo() {
     setFiltros(FILTROS_INICIALES)
   }, [])
 
+  /** Sustituye los filtros por los de una vista guardada, conservando el orden. */
+  const aplicarVista = useCallback((vista: VistaGuardada) => {
+    setFiltros((previos) => ({ ...FILTROS_INICIALES, orden: previos.orden, ...vista.filtros }))
+  }, [])
+
   /**
    * Alterna el orden por una columna. La primera pulsación ordena ascendente;
    * la siguiente invierte. Cambiar de columna vuelve a empezar ascendente,
@@ -312,11 +321,19 @@ export function useCatalogo() {
       })
     }
 
-    if (filtros.soloActivos) {
+    if (filtros.actividad !== 'todos') {
       activos.push({
-        clave: 'activos',
-        etiqueta: 'Solo activos',
-        quitar: () => actualizarFiltros({ soloActivos: false }),
+        clave: 'actividad',
+        etiqueta: filtros.actividad === 'activos' ? 'Solo activos' : 'Solo inactivos',
+        quitar: () => actualizarFiltros({ actividad: 'todos' }),
+      })
+    }
+
+    if (filtros.soloSinPrecio) {
+      activos.push({
+        clave: 'sin-precio',
+        etiqueta: 'Sin precio',
+        quitar: () => actualizarFiltros({ soloSinPrecio: false }),
       })
     }
 
@@ -354,6 +371,7 @@ export function useCatalogo() {
     actualizarFiltros,
     alternarCategoria,
     limpiarFiltros,
+    aplicarVista,
     ordenarPor,
     reintentar: () => void cargar(),
   }

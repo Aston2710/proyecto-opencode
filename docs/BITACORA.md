@@ -153,6 +153,27 @@ registros, 175 kB comprimidos no justifican esa complejidad.
 **Registrado como deuda técnica**, no como fallo: si se añade una segunda vista,
 la gráfica se separa en su propio fragmento.
 
+### Cierre
+
+La deuda se saldó por un camino distinto al previsto. Al rediseñar el panel, la
+gráfica de barras verticales se sustituyó por barras horizontales en HTML: son
+ocho valores en una sola dimensión, y una capa de SVG con ejes, escalas y
+tooltips no aportaba nada que el navegador no supiera dibujar solo.
+
+Con eso la dependencia dejó de tener usos y se desinstaló. El efecto sobre el
+paquete no fue marginal:
+
+| | Antes | Después |
+| --- | --- | --- |
+| Paquete | 599 kB | 240 kB |
+| Comprimido | 180 kB | 73.5 kB |
+
+**Lección incorporada.** Antes de diferir una librería conviene preguntarse si
+hace falta. Recharts entró para dibujar un único gráfico de barras; 106 kB
+comprimidos por algo que resuelve un `div` con un ancho porcentual es un precio
+que no se justificaba. El aviso de tamaño de Vite señalaba el síntoma correcto y
+la solución no era el `import()` dinámico que parecía obvia.
+
 ---
 
 ## E-06 · La herramienta de shell POSIX no arranca en el entorno

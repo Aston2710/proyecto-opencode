@@ -1,7 +1,16 @@
+import type { Ruta } from '../hooks/useRuta'
+
 interface Props {
+  ruta: Ruta
   esOscuro: boolean
+  onNavegar: (ruta: Ruta) => void
   onAlternarTema: () => void
 }
+
+const PESTANAS: Array<{ ruta: Ruta; etiqueta: string }> = [
+  { ruta: 'panel', etiqueta: 'Panel' },
+  { ruta: 'catalogo', etiqueta: 'Catálogo' },
+]
 
 /**
  * Barra superior fija de 56 px: marca y conmutador de tema.
@@ -11,7 +20,7 @@ interface Props {
  * quien consulta el catálogo y competía con el título. Sigue disponible en el
  * archivo y en la documentación.
  */
-export function BarraSuperior({ esOscuro, onAlternarTema }: Props) {
+export function BarraSuperior({ ruta, esOscuro, onNavegar, onAlternarTema }: Props) {
   return (
     <header className="sticky top-0 z-40 h-[56px] border-b border-borde bg-superficie">
       <div className="mx-auto flex h-full max-w-[1240px] items-center justify-between gap-md px-md">
@@ -31,6 +40,30 @@ export function BarraSuperior({ esOscuro, onAlternarTema }: Props) {
           </span>
           <h1 className="t-page-title truncate text-texto">Catálogo Mayorista</h1>
         </div>
+
+        <nav aria-label="Secciones" className="flex h-full items-stretch gap-1">
+          {PESTANAS.map((pestana) => {
+            const activa = ruta === pestana.ruta
+            return (
+              <a
+                key={pestana.ruta}
+                href={`#/${pestana.ruta}`}
+                aria-current={activa ? 'page' : undefined}
+                onClick={(evento) => {
+                  evento.preventDefault()
+                  onNavegar(pestana.ruta)
+                }}
+                className={`t-body flex items-center border-b-2 px-3 font-medium transition-colors ${
+                  activa
+                    ? 'border-acento text-texto'
+                    : 'border-transparent text-texto-tenue hover:text-texto-medio'
+                }`}
+              >
+                {pestana.etiqueta}
+              </a>
+            )
+          })}
+        </nav>
 
         <div className="flex items-center gap-md">
           <button
