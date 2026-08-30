@@ -16,6 +16,7 @@
 >
 > - [x] Ejecutar la sesión de diseño en Google Stitch y aplicar el resultado.
 > - [x] Guardar las capturas y el código exportado de Stitch en `docs/diseno/`.
+> - [ ] **Abrir el proyecto con OpenCode + OpenRouter al menos una vez** y comprobar que la skill, los dos comandos y el subagente cargan. La sección 3 declara ese entorno; la declaración solo es cierta una vez hecho.
 > - [ ] Completar el nombre del autor en la ficha superior.
 > - [ ] Pegar el enlace del repositorio y el de la aplicación desplegada.
 > - [ ] Borrar este bloque de pendientes.
@@ -59,10 +60,33 @@ Construido con Vite, React 19, TypeScript, Tailwind CSS v4 y Recharts.
 
 | Función | Herramienta |
 | --- | --- |
-| Agente de desarrollo | Agente de IA en terminal, en modos Plan y Build — generación de todo el código, refactorización y depuración |
+| Agente de desarrollo | **OpenCode**, en modos Plan y Build — generación de todo el código, refactorización y depuración |
+| Proveedor de modelo | **OpenRouter** (BYOK) |
 | Diseño de interfaz | **Google Stitch** |
 | Control de versiones | Git y GitHub |
 | Despliegue | Vercel |
+
+### Sobre el entorno de agentes
+
+Se trabajó con **OpenCode** conectado a **OpenRouter** bajo el esquema BYOK
+(*bring your own key*) que contemplan las directrices del curso. La
+configuración del agente no vive en ajustes locales de la máquina sino
+versionada en el repositorio, de modo que cualquiera que lo clone obtenga el
+mismo comportamiento:
+
+```
+AGENTS.md                                    Instrucciones de proyecto
+.opencode/skills/catalogo-mayorista/         Contrato de datos, diseño y prohibiciones
+.opencode/commands/renderizar_tarjetas.md    Comando de construcción de la rejilla
+.opencode/commands/auditar_datos.md          Comando que delega en el subagente
+.opencode/agents/auditor-datos.md            Subagente auditor, sin permiso de escritura
+```
+
+Los modos **Plan** y **Build** se usaron de forma deliberada: primero se pedía el
+plan de arquitectura y se aprobaba, y solo entonces se pasaba a construir. El
+subagente `auditor-datos` se declara con `mode: subagent` y `permission` de
+`edit` y `write` en `deny`, lo que hace la separación de responsabilidades una
+restricción del entorno y no una recomendación escrita en prosa.
 
 ### Sobre la herramienta de diseño
 
