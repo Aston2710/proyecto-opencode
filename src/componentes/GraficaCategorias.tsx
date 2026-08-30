@@ -25,18 +25,31 @@ interface Props {
  */
 export function GraficaCategorias({ datos }: Props) {
   return (
-    <section
-      aria-label="Inventario por categoría"
-      className="rounded border border-borde bg-superficie p-md"
-    >
-      <header className="mb-sm flex flex-wrap items-baseline justify-between gap-sm">
-        <h2 className="t-card-title text-texto">Unidades por categoría</h2>
-        <p className="t-metadata text-texto-tenue">
+    <details className="group rounded border border-borde bg-superficie [&[open]>summary]:border-b">
+      <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-sm border-borde p-md marker:hidden [&::-webkit-details-marker]:hidden">
+        <span className="flex items-center gap-2">
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            className="size-4 shrink-0 text-texto-tenue transition-transform group-open:rotate-90"
+            fill="none"
+            stroke="currentColor"
+          >
+            <path d="m9 6 6 6-6 6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <span className="t-card-title text-texto">Unidades por categoría</span>
+        </span>
+        <span className="t-metadata text-texto-tenue">
           Calculado sobre los productos visibles. Los registros sin stock no suman.
-        </p>
-      </header>
+        </span>
+      </summary>
 
-      {datos.length === 0 ? (
+      <div className="p-md">{contenido()}</div>
+    </details>
+  )
+
+  function contenido() {
+    return datos.length === 0 ? (
         <p className="t-body py-10 text-center text-texto-medio">
           No hay datos que graficar con los filtros actuales.
         </p>
@@ -67,7 +80,7 @@ export function GraficaCategorias({ datos }: Props) {
                 contentStyle={{
                   background: 'var(--superficie)',
                   border: '1px solid var(--borde-fuerte)',
-                  borderRadius: 10,
+                  borderRadius: 4,
                   fontSize: 12,
                   color: 'var(--texto)',
                 }}
@@ -79,11 +92,10 @@ export function GraficaCategorias({ datos }: Props) {
                   nombre === 'unidades' ? 'Unidades' : 'Artículos',
                 ]}
               />
-              <Bar dataKey="unidades" fill="var(--acento)" radius={[6, 6, 0, 0]} maxBarSize={54} />
+              <Bar dataKey="unidades" fill="var(--acento)" radius={[4, 4, 0, 0]} maxBarSize={54} />
             </BarChart>
           </ResponsiveContainer>
         </div>
-      )}
-    </section>
-  )
+      )
+  }
 }

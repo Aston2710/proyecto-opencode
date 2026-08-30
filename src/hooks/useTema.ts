@@ -16,15 +16,25 @@ function esTema(valor: unknown): valor is Tema {
 }
 
 /**
+ * Tema de partida cuando el visitante no ha elegido todavía.
+ *
+ * Es `claro` y no `sistema` a propósito: el sistema de diseño se construyó
+ * sobre el papel cálido, y esa es la lectura de referencia del catálogo. El
+ * tema oscuro existe y está completo, pero se ofrece, no se impone por la
+ * configuración del sistema operativo.
+ */
+const TEMA_POR_OMISION: Tema = 'claro'
+
+/**
  * Lee la preferencia guardada. El acceso va en try/catch porque en una
  * ventana privada o con el almacenamiento bloqueado, leerlo lanza.
  */
 function leerPreferencia(): Tema {
   try {
     const guardado = window.localStorage.getItem(CLAVE_ALMACEN)
-    return esTema(guardado) ? guardado : 'sistema'
+    return esTema(guardado) ? guardado : TEMA_POR_OMISION
   } catch {
-    return 'sistema'
+    return TEMA_POR_OMISION
   }
 }
 

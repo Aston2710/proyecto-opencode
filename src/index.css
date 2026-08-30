@@ -11,16 +11,17 @@
    --------------------------------------------------------------- */
 
 :root {
-  /* Papel cálido, no blanco clínico. */
+  /* Papel cálido, no blanco clínico. Rampa de neutros tomada literalmente
+     del DESIGN.md que produjo Stitch. */
   --fondo: #f7f6f3;
   --superficie: #ffffff;
-  --superficie-sutil: #faf9f6;
+  --superficie-sutil: #f2f4f1;
   --superficie-alta: #eceeeb;
   --borde: #e3e1dc;
-  --borde-fuerte: #d2cfc8;
-  --texto: #1a1918;
-  --texto-medio: #57564f;
-  --texto-tenue: #8b8a82;
+  --borde-fuerte: #bfc9c3;
+  --texto: #191c1b;
+  --texto-medio: #404944;
+  --texto-tenue: #707974;
   --acento: #1f5f4b;
   --acento-suave: #e6f0ec;
   --acento-texto: #ffffff;
