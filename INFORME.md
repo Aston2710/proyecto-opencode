@@ -5,7 +5,7 @@
 | | |
 | --- | --- |
 | **Proyecto** | Catálogo Mayorista — panel de inventario dirigido por datos |
-| **Autor** | _(completar nombre)_ |
+| **Autor** | Jesús Redondo |
 | **Aplicación desplegada** | **https://proyecto-opencode.vercel.app** |
 | **Fecha** | 30 de agosto de 2026 |
 
