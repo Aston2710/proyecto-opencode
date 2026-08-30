@@ -95,10 +95,10 @@ Papel cálido en lugar de blanco clínico. La estructura la definen líneas de 1
 no sombras. La jerarquía la marcan el peso tipográfico y el espacio, no el color.
 Prohibidos: degradados, glassmorphism, ilustraciones, emojis.
 
-- **Superficie:** fondo `--fondo`, contenedores `--superficie` con borde `--borde` de 1 px. La profundidad se comunica por capas tonales y líneas finas, **nunca por sombras**.
+- **Superficie:** fondo `--fondo`, contenedores `--superficie` con borde `--borde` de 1 px. Un **único plano de elevación** (`--sombra-panel`), reservado a lo que exige acción: hoy solo la cola de reposición. Si todo se eleva, nada destaca.
 - **Acento:** un único `--acento` (verde de bodega), usado con avaricia: chips activos, botón primario, página actual y barras de la gráfica. Nada más.
-- **Semáforo de inventario:** `--ok` = stock sano, `--alerta` = bajo el mínimo, `--critico` (terracota apagado) = agotado, `--neutro` = sin dato. El color **nunca** comunica solo: siempre punto de color más texto.
-- **Tipografía:** una clase por rol, definidas en `index.css`. No inventes tamaños sueltos: usa `.t-page-title` (19/600), `.t-indicator` (22/600), `.t-card-title` (15/600), `.t-body` (13/400), `.t-metadata` (12/500), `.t-label-caps` (11/500 mayúsculas) y `.t-mono` (13/450, IBM Plex Mono para SKUs y cifras). Añade `cifras` a todo lo numérico.
+- **Semáforo de inventario en dos capas.** El texto usa `--ok` / `--alerta` / `--critico`, que son oscuros porque deben cumplir AA. El punto usa `--ok-punto` / `--alerta-punto` / `--critico-punto`, vivos, porque no son texto y su único trabajo es distinguirse a 6 px. El color **nunca** comunica solo: siempre punto más texto.
+- **Tipografía:** una clase por rol, definidas en `index.css`. No inventes tamaños sueltos: usa `.t-titular` (30/600, cifras de indicador del panel, con el símbolo de moneda en `.simbolo`), `.t-page-title` (19/600), `.t-indicator` (22/600), `.t-card-title` (15/600), `.t-body` (13/400), `.t-metadata` (12/500), `.t-label-caps` (11/500 mayúsculas) y `.t-mono` (13/450, IBM Plex Mono para SKUs y cifras). Añade `cifras` a todo lo numérico.
 - **Forma:** rejilla base de 4 px, con utilidades `xs`/`sm`/`md`/`lg`/`xl` (4/8/16/24/32). Radio: `rounded-sm` 2px en distintivos, `rounded` 4px en contenedores y controles, `rounded-full` solo en chips.
 - **La lista es una `<table>` de verdad**, no tarjetas ni divs: `<thead>`, `<tbody>`, `<th scope="col">` y `<caption>`. Un lector de pantalla debe anunciar filas y columnas, no una ristra de botones. Anchos por `<colgroup>` con `table-fixed`.
 - **Columnas, en orden:** SKU · producto · categoría · estado · reorden · existencias · entrega · unitario. Las secundarias se ocultan por punto de ruptura (`sm`, `md`, `lg`, `xl`), nunca se comprimen.

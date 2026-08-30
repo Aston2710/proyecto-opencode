@@ -184,12 +184,19 @@ export const ETIQUETAS_INVENTARIO: Record<EstadoInventario, string> = {
   'sin-dato': 'Sin dato',
 }
 
-/** Clases del punto y del texto del semáforo. El color nunca va solo. */
+/**
+ * Clases del punto y del texto del semáforo.
+ *
+ * El punto usa el tono vivo y el texto el legible: a 6 px, tres tonos oscuros
+ * de saturación parecida se confunden entre sí, que es justo lo contrario de
+ * lo que un semáforo debe hacer. El color nunca comunica solo: siempre va
+ * acompañado del texto.
+ */
 export const ESTILOS_INVENTARIO: Record<EstadoInventario, { punto: string; texto: string }> = {
-  disponible: { punto: 'bg-ok', texto: 'text-ok' },
-  bajo: { punto: 'bg-alerta', texto: 'text-alerta' },
-  agotado: { punto: 'bg-critico', texto: 'text-critico' },
-  'sin-dato': { punto: 'bg-neutro', texto: 'text-texto-tenue' },
+  disponible: { punto: 'bg-ok-punto', texto: 'text-ok' },
+  bajo: { punto: 'bg-alerta-punto', texto: 'text-alerta' },
+  agotado: { punto: 'bg-critico-punto', texto: 'text-critico' },
+  'sin-dato': { punto: 'bg-neutro-punto', texto: 'text-texto-tenue' },
 }
 
 /**

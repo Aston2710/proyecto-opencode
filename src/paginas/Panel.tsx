@@ -1,4 +1,5 @@
-import { CalidadDato } from '../componentes/CalidadDato'
+﻿import { CalidadDato } from '../componentes/CalidadDato'
+import { CifraIndicador } from '../componentes/CifraIndicador'
 import { ColaReposicion } from '../componentes/ColaReposicion'
 import { GraficaValor } from '../componentes/GraficaValor'
 import type { HuecoCatalogo, ResumenNegocio, ValorCategoria } from '../metricas'
@@ -86,9 +87,10 @@ export function Panel({
         {indicadores.map((indicador) => (
           <div key={indicador.etiqueta} className="bg-superficie px-md py-4">
             <p className="t-label-caps text-texto-tenue">{indicador.etiqueta}</p>
-            <p className={`mt-1.5 text-[30px] leading-none font-semibold cifras ${color[indicador.tono]}`}>
-              {indicador.valor}
-            </p>
+            <CifraIndicador
+              valor={indicador.valor}
+              className={`mt-1.5 ${color[indicador.tono]}`}
+            />
             <p className="t-metadata cifras mt-1.5 text-texto-tenue">{indicador.nota}</p>
           </div>
         ))}

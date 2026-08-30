@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+﻿@import 'tailwindcss';
 
 /* ---------------------------------------------------------------
    Tokens del sistema «Industrial Inventory Ledger», generado con
@@ -22,21 +22,33 @@
   --texto: #191c1b;
   --texto-medio: #404944;
   --texto-tenue: #707974;
-  --acento: #1f5f4b;
-  --acento-suave: #e6f0ec;
+  /* Verde de bodega corrido hacia el azul: sobre papel cálido, el verde
+     original tiraba a oliva y parecía un accidente en lugar de una decisión. */
+  --acento: #0f5c4d;
+  --acento-suave: #e3efeb;
   --acento-texto: #ffffff;
-  --ok: #2f7d4f;
-  --ok-suave: #e7f2ea;
-  --alerta: #a86413;
+
+  /* El semáforo se separa en dos capas. Los tonos de texto se mantienen
+     oscuros porque tienen que cumplir contraste AA; los puntos son vivos
+     porque no son texto y su único trabajo es distinguirse a 6 px. */
+  --ok: #2f7d43;
+  --ok-punto: #34a853;
+  --ok-suave: #e6f2e8;
+  --alerta: #955c00;
+  --alerta-punto: #e8a317;
   --alerta-suave: #fbf0dd;
-  /* Terracota apagado en lugar de rojo puro: convive con el papel
-     cálido en vez de pelearse con él. */
-  --critico: #7f443e;
-  --critico-suave: #f4e8e5;
+  /* Terracota en lugar de rojo puro: convive con el papel cálido en vez de
+     pelearse con él. */
+  --critico: #8a3a2c;
+  --critico-punto: #c1462f;
+  --critico-suave: #f6e9e5;
   --neutro: #757875;
+  --neutro-punto: #9aa09b;
   --neutro-suave: #edece8;
   --velo: rgb(26 25 24 / 0.4);
   --brillo: rgb(26 25 24 / 0.06);
+  /* Un único plano de elevación, reservado a lo que exige acción. */
+  --sombra-panel: 0 1px 2px rgb(26 25 24 / 0.04), 0 8px 20px -12px rgb(26 25 24 / 0.18);
 }
 
 /* Carbón cálido, nunca azulado ni negro puro. */
@@ -51,19 +63,24 @@
     --texto: #f0efeb;
     --texto-medio: #b3b2aa;
     --texto-tenue: #86857d;
-    --acento: #61b795;
-    --acento-suave: #1c332b;
-    --acento-texto: #0d1c16;
-    --ok: #62b783;
+    --acento: #5cc2a3;
+    --acento-suave: #14332b;
+    --acento-texto: #06201a;
+    --ok: #5fbf7e;
+    --ok-punto: #4ade80;
     --ok-suave: #17301f;
-    --alerta: #d99b45;
+    --alerta: #e0a34a;
+    --alerta-punto: #f5b942;
     --alerta-suave: #33260f;
-    --critico: #c98d84;
-    --critico-suave: #2f1d1a;
+    --critico: #e08a7d;
+    --critico-punto: #f0705a;
+    --critico-suave: #331d18;
     --neutro: #91908a;
+    --neutro-punto: #7d817c;
     --neutro-suave: #272724;
     --velo: rgb(0 0 0 / 0.55);
     --brillo: rgb(255 255 255 / 0.05);
+    --sombra-panel: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 20px -12px rgb(0 0 0 / 0.6);
   }
 }
 
@@ -77,19 +94,24 @@
   --texto: #f0efeb;
   --texto-medio: #b3b2aa;
   --texto-tenue: #86857d;
-  --acento: #61b795;
-  --acento-suave: #1c332b;
-  --acento-texto: #0d1c16;
-  --ok: #62b783;
+  --acento: #5cc2a3;
+  --acento-suave: #14332b;
+  --acento-texto: #06201a;
+  --ok: #5fbf7e;
+  --ok-punto: #4ade80;
   --ok-suave: #17301f;
-  --alerta: #d99b45;
+  --alerta: #e0a34a;
+  --alerta-punto: #f5b942;
   --alerta-suave: #33260f;
-  --critico: #c98d84;
-  --critico-suave: #2f1d1a;
+  --critico: #e08a7d;
+  --critico-punto: #f0705a;
+  --critico-suave: #331d18;
   --neutro: #91908a;
+  --neutro-punto: #7d817c;
   --neutro-suave: #272724;
   --velo: rgb(0 0 0 / 0.55);
   --brillo: rgb(255 255 255 / 0.05);
+  --sombra-panel: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 20px -12px rgb(0 0 0 / 0.6);
 }
 
 @theme inline {
@@ -113,12 +135,16 @@
   --color-acento-suave: var(--acento-suave);
   --color-acento-texto: var(--acento-texto);
   --color-ok: var(--ok);
+  --color-ok-punto: var(--ok-punto);
   --color-ok-suave: var(--ok-suave);
   --color-alerta: var(--alerta);
+  --color-alerta-punto: var(--alerta-punto);
   --color-alerta-suave: var(--alerta-suave);
   --color-critico: var(--critico);
+  --color-critico-punto: var(--critico-punto);
   --color-critico-suave: var(--critico-suave);
   --color-neutro: var(--neutro);
+  --color-neutro-punto: var(--neutro-punto);
   --color-neutro-suave: var(--neutro-suave);
 
   /* Rejilla base de 4px, tal como la fija el sistema. */
@@ -216,6 +242,27 @@ body {
   line-height: 18px;
   font-weight: 450;
   font-variant-numeric: tabular-nums;
+}
+
+/* Cifra de titular del panel. Tracking más cerrado de lo habitual: a 30 px,
+   el espaciado por omisión deja las cifras sueltas y el número pierde peso
+   como objeto. */
+.t-titular {
+  font-size: 30px;
+  line-height: 32px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* El símbolo de moneda acompaña a la cifra, no compite con ella. */
+.t-titular .simbolo {
+  font-size: 0.6em;
+  font-weight: 500;
+  letter-spacing: 0;
+  margin-right: 0.08em;
+  vertical-align: 0.12em;
+  opacity: 0.7;
 }
 
 /* Todas las cifras alineadas verticalmente entre filas. */

@@ -1,4 +1,4 @@
-import type { Producto } from '../tipos'
+﻿import type { Producto } from '../tipos'
 import {
   clasificarInventario,
   formatearEntero,
@@ -25,7 +25,7 @@ export function ColaReposicion({ productos, total, onAbrir, onVerTodos }: Props)
   return (
     <section
       aria-labelledby="titulo-reposicion"
-      className="rounded border border-borde bg-superficie"
+      className="rounded border border-borde bg-superficie shadow-[var(--sombra-panel)]"
     >
       <header className="flex flex-wrap items-baseline justify-between gap-sm border-b border-borde px-md py-3">
         <div>
