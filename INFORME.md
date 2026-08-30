@@ -16,7 +16,7 @@
 >
 > - [x] Ejecutar la sesión de diseño en Google Stitch y aplicar el resultado.
 > - [x] Guardar las capturas y el código exportado de Stitch en `docs/diseno/`.
-> - [ ] **Abrir el proyecto con OpenCode + OpenRouter al menos una vez** y comprobar que la skill, los dos comandos y el subagente cargan. La sección 3 declara ese entorno; la declaración solo es cierta una vez hecho.
+> - [ ] **Abrir el proyecto con OpenCode y comprobar que su configuración carga**: la skill `catalogo-mayorista`, los comandos `/renderizar_tarjetas` y `/auditar_datos`, y el subagente `@auditor-datos`.
 > - [ ] Completar el nombre del autor en la ficha superior.
 > - [ ] Pegar el enlace del repositorio y el de la aplicación desplegada.
 > - [ ] Borrar este bloque de pendientes.
